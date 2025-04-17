@@ -10,7 +10,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/creachadair/jrpc2 v1.3.1
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/gofiber/contrib/fiberzerolog v1.0.2
+	github.com/gofiber/contrib/fiberzerolog v1.0.3
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/swagger v1.1.1
 	github.com/google/uuid v1.6.0
