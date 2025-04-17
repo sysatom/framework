@@ -1,0 +1,54 @@
+ignoreGeneratedHeader = false
+severity = "error"
+confidence = 0.8
+errorCode = 1
+warningCode = 0
+
+[rule.blank-imports]
+[rule.context-as-argument]
+[rule.context-keys-type]
+[rule.dot-imports]
+[rule.error-return]
+[rule.error-strings]
+[rule.error-naming]
+[rule.exported]
+    Disabled = true
+[rule.increment-decrement]
+[rule.var-naming]
+    Disabled = true
+[rule.var-declaration]
+[rule.package-comments]
+    Disabled = true
+[rule.range]
+[rule.receiver-naming]
+[rule.time-naming]
+[rule.unexported-return]
+[rule.indent-error-flow]
+    Disabled = true
+[rule.errorf]
+[rule.empty-block]
+[rule.superfluous-else]
+[rule.unused-parameter]
+    Disabled = true
+[rule.unreachable-code]
+[rule.redefines-builtin-id]
+[rule.defer]
+[rule.duplicated-imports]
+[rule.empty-lines]
+[rule.function-result-limit]
+  arguments =[5]
+[rule.get-return]
+[rule.identical-branches]
+[rule.if-return]
+[rule.import-shadowing]
+[rule.modifies-parameter]
+[rule.modifies-value-receiver]
+[rule.range-val-in-closure]
+[rule.range-val-address]
+[rule.string-of-int]
+[rule.struct-tag]
+[rule.unconditional-recursion]
+[rule.unhandled-error]
+[rule.unnecessary-stmt]
+    Disabled = true
+[rule.waitgroup-by-value]
