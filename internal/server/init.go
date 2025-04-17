@@ -395,7 +395,7 @@ func initializeMedia() error {
 					}
 					conf = string(data)
 				}
-				fmt.Println(conf) // FIXME
+				_, _ = fmt.Println(conf) // FIXME
 				//if err := store.UseMediaHandler(config.App.Media.UseHandler, conf); err != nil {
 				//	return fmt.Errorf("failed to init media handler, %w", err)
 				//}
