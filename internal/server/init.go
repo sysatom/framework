@@ -4,10 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/VictoriaMetrics/metrics"
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
-	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/pflag"
@@ -115,12 +113,6 @@ func initialize() error {
 	}
 	flog.Info("initialize Event ok")
 
-	// init metrics
-	if err = initializeMetrics(); err != nil {
-		return err
-	}
-	flog.Info("initialize Metrics ok")
-
 	return nil
 }
 
@@ -220,6 +212,56 @@ func initializeHttp() error {
 	// Set up HTTP server.
 	httpApp = echo.New()
 
+	// setting
+	httpApp.JSONSerializer = &DefaultJSONSerializer{}
+	httpApp.HTTPErrorHandler = func(err error, c echo.Context) {
+		if c.Response().Committed {
+			return
+		}
+
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			if he.Internal != nil {
+				if herr, ok := he.Internal.(*echo.HTTPError); ok {
+					he = herr
+				}
+			}
+		} else {
+			he = &echo.HTTPError{
+				Code:    http.StatusInternalServerError,
+				Message: http.StatusText(http.StatusInternalServerError),
+			}
+		}
+
+		// Issue #1426
+		code := he.Code
+		message := he.Message
+
+		switch m := he.Message.(type) {
+		case string:
+			if httpApp.Debug {
+				message = echo.Map{"message": m, "error": err.Error()}
+			} else {
+				message = echo.Map{"message": m}
+			}
+		case json.Marshaler:
+			// do nothing - this type knows how to format itself to JSON
+		case error:
+			message = echo.Map{"message": m.Error()}
+		}
+
+		// Send response
+		if c.Request().Method == http.MethodHead { // Issue #608
+			err = c.NoContent(he.Code)
+		} else {
+			err = c.JSON(code, message)
+		}
+		if err != nil {
+			httpApp.Logger.Error(err)
+		}
+	}
+
+	// middleware
 	httpApp.Use(middleware.Logger())
 	httpApp.Use(middleware.CORS())
 	httpApp.Use(middleware.Recover())
@@ -235,24 +277,6 @@ func initializeHttp() error {
 		Timeout: 30 * time.Second, // TODO config
 	}))
 	httpApp.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(200)))) // TODO rate limiter config
-	httpApp.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: "secret",
-	})) // TODO jwt config
-
-	httpApp.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			// Extract the credentials from HTTP request header and perform a security
-			// check
-
-			// For invalid credentials
-			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials") // TODO
-
-			// For valid credentials call next
-			// return next(c)
-		}
-	})
-
-	httpApp.JSONSerializer = &DefaultJSONSerializer{}
 
 	//logger := flog.GetLogger()
 	//httpApp.Use(fiberzerolog.New(fiberzerolog.Config{
@@ -421,16 +445,4 @@ func initializeEvent() error {
 	}()
 
 	return nil
-}
-
-func initializeMetrics() error {
-	return metrics.InitPushWithOptions(
-		context.Background(),
-		fmt.Sprintf("%s/api/v1/import/prometheus", config.App.Metrics.Endpoint),
-		10*time.Second,
-		true,
-		&metrics.PushOptions{
-			ExtraLabels: fmt.Sprintf(`instance="flowbot",version="%s"`, version.Buildtags),
-		},
-	)
 }

@@ -5,7 +5,6 @@ go 1.24
 require (
 	github.com/ThreeDotsLabs/watermill v1.4.6
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.2
-	github.com/VictoriaMetrics/metrics v1.35.2
 	github.com/bsm/redislock v0.9.4
 	github.com/bytedance/sonic v1.13.2
 	github.com/cenkalti/backoff v2.2.1+incompatible
@@ -96,9 +95,7 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.60.0 // indirect
-	github.com/valyala/fastrand v1.1.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	github.com/valyala/histogram v1.2.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
