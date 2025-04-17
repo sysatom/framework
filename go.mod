@@ -97,6 +97,7 @@ require (
 	github.com/valyala/fasthttp v1.60.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
+	github.com/ziflex/lecho/v3 v3.7.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect

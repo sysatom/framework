@@ -16,6 +16,7 @@ import (
 	"github.com/sysatom/framework/pkg/types"
 	"github.com/sysatom/framework/pkg/utils"
 	"github.com/sysatom/framework/version"
+	"github.com/ziflex/lecho/v3"
 	"golang.org/x/time/rate"
 	"log"
 	"net/http"
@@ -260,9 +261,10 @@ func initializeHttp() error {
 			httpApp.Logger.Error(err)
 		}
 	}
+	httpApp.Logger = lecho.From(flog.GetLogger())
 
 	// middleware
-	httpApp.Use(middleware.Logger())
+	//httpApp.Use(middleware.Logger())
 	httpApp.Use(middleware.CORS())
 	httpApp.Use(middleware.Recover())
 	httpApp.Use(middleware.Decompress())
@@ -277,17 +279,9 @@ func initializeHttp() error {
 		Timeout: 30 * time.Second, // TODO config
 	}))
 	httpApp.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(200)))) // TODO rate limiter config
-
-	//logger := flog.GetLogger()
-	//httpApp.Use(fiberzerolog.New(fiberzerolog.Config{
-	//	Logger: &logger,
-	//	SkipURIs: []string{
-	//		"/",
-	//		"/livez",
-	//		"/readyz",
-	//		"/service/user/metrics",
-	//	},
-	//}))
+	httpApp.Use(lecho.Middleware(lecho.Config{
+		Logger: lecho.From(flog.GetLogger()),
+	}))
 
 	// hook
 	//httpApp.Hooks().OnRoute(func(r fiber.Route) error {
