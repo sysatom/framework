@@ -2,34 +2,30 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/VictoriaMetrics/metrics"
+	"github.com/bytedance/sonic"
+	"github.com/gofiber/fiber/v2"
+	echojwt "github.com/labstack/echo-jwt/v4"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/pflag"
+	"github.com/sysatom/framework/pkg/cache"
+	"github.com/sysatom/framework/pkg/config"
+	"github.com/sysatom/framework/pkg/event"
+	"github.com/sysatom/framework/pkg/flog"
+	"github.com/sysatom/framework/pkg/types"
+	"github.com/sysatom/framework/pkg/utils"
+	"github.com/sysatom/framework/version"
+	"golang.org/x/time/rate"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
 	"runtime/pprof"
 	"strings"
 	"time"
-
-	"github.com/VictoriaMetrics/metrics"
-	"github.com/gofiber/contrib/fiberzerolog"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/compress"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/healthcheck"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/spf13/pflag"
-	"github.com/sysatom/framework/pkg/cache"
-	"github.com/sysatom/framework/pkg/config"
-	"github.com/sysatom/framework/pkg/event"
-	"github.com/sysatom/framework/pkg/flog"
-	"github.com/sysatom/framework/pkg/pprofs"
-	"github.com/sysatom/framework/pkg/types"
-	"github.com/sysatom/framework/pkg/types/protocol"
-	"github.com/sysatom/framework/pkg/utils"
-	"github.com/sysatom/framework/version"
 )
 
 var (
@@ -37,8 +33,8 @@ var (
 	stopSignal <-chan bool
 	// swagger
 	swagHandler fiber.Handler
-	// fiber app
-	httpApp *fiber.App
+	// web app
+	httpApp *echo.Echo
 	// flag variables
 	appFlag struct {
 		configFile *string
@@ -196,70 +192,94 @@ func initializeConfig() error {
 	return nil
 }
 
+// DefaultJSONSerializer implements JSON encoding using encoding/json.
+type DefaultJSONSerializer struct{}
+
+// Serialize converts an interface into a json and writes it to the response.
+// You can optionally use the indent parameter to produce pretty JSONs.
+func (d DefaultJSONSerializer) Serialize(c echo.Context, i interface{}, indent string) error {
+	enc := sonic.ConfigDefault.NewEncoder(c.Response())
+	if indent != "" {
+		enc.SetIndent("", indent)
+	}
+	return enc.Encode(i)
+}
+
+// Deserialize reads a JSON from a request body and converts it into an interface.
+func (d DefaultJSONSerializer) Deserialize(c echo.Context, i interface{}) error {
+	err := sonic.ConfigDefault.NewDecoder(c.Request().Body).Decode(i)
+	if ute, ok := err.(*json.UnmarshalTypeError); ok {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Unmarshal type error: expected=%v, got=%v, field=%v, offset=%v", ute.Type, ute.Value, ute.Field, ute.Offset)).SetInternal(err)
+	} else if se, ok := err.(*json.SyntaxError); ok {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Syntax error: offset=%v, error=%v", se.Offset, se.Error())).SetInternal(err)
+	}
+	return err
+}
+
 func initializeHttp() error {
 	// Set up HTTP server.
-	httpApp = fiber.New(fiber.Config{
-		DisableStartupMessage: true,
+	httpApp = echo.New()
 
-		JSONDecoder:  jsoniter.Unmarshal,
-		JSONEncoder:  jsoniter.Marshal,
-		ReadTimeout:  10 * time.Second,
-		IdleTimeout:  30 * time.Second,
-		WriteTimeout: 90 * time.Second,
-
-		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			// Send custom error page
-			if err != nil {
-				return ctx.Status(fiber.StatusBadRequest).
-					JSON(protocol.NewFailedResponseWithError(protocol.ErrBadRequest, err))
-			}
-
-			// Return from handler
-			return nil
+	httpApp.Use(middleware.Logger())
+	httpApp.Use(middleware.CORS())
+	httpApp.Use(middleware.Recover())
+	httpApp.Use(middleware.Decompress())
+	httpApp.Use(middleware.Gzip())
+	httpApp.Use(middleware.RequestID())
+	httpApp.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+		Skipper:      middleware.DefaultSkipper,
+		ErrorMessage: "custom timeout error message returns to client",
+		OnTimeoutRouteErrorHandler: func(err error, c echo.Context) {
+			log.Println(c.Path())
 		},
+		Timeout: 30 * time.Second, // TODO config
+	}))
+	httpApp.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(200)))) // TODO rate limiter config
+	httpApp.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: "secret",
+	})) // TODO jwt config
+
+	httpApp.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			// Extract the credentials from HTTP request header and perform a security
+			// check
+
+			// For invalid credentials
+			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials") // TODO
+
+			// For valid credentials call next
+			// return next(c)
+		}
 	})
-	httpApp.Use(recover.New(recover.Config{EnableStackTrace: true}))
-	httpApp.Use(requestid.New())
-	httpApp.Use(healthcheck.New())
-	httpApp.Use(cors.New(cors.Config{
-		AllowOriginsFunc: func(origin string) bool {
-			return true
-		},
-	}))
-	httpApp.Use(compress.New(compress.Config{
-		Level: compress.LevelBestSpeed,
-	}))
-	httpApp.Use(limiter.New(limiter.Config{
-		Max:               50,
-		Expiration:        10 * time.Second,
-		LimiterMiddleware: limiter.SlidingWindow{},
-	}))
-	logger := flog.GetLogger()
-	httpApp.Use(fiberzerolog.New(fiberzerolog.Config{
-		Logger: &logger,
-		SkipURIs: []string{
-			"/",
-			"/livez",
-			"/readyz",
-			"/service/user/metrics",
-		},
-	}))
+
+	httpApp.JSONSerializer = &DefaultJSONSerializer{}
+
+	//logger := flog.GetLogger()
+	//httpApp.Use(fiberzerolog.New(fiberzerolog.Config{
+	//	Logger: &logger,
+	//	SkipURIs: []string{
+	//		"/",
+	//		"/livez",
+	//		"/readyz",
+	//		"/service/user/metrics",
+	//	},
+	//}))
 
 	// hook
-	httpApp.Hooks().OnRoute(func(r fiber.Route) error {
-		if r.Method == http.MethodHead {
-			return nil
-		}
-		flog.Info("[route] %+7s %s", r.Method, r.Path)
-		return nil
-	})
+	//httpApp.Hooks().OnRoute(func(r fiber.Route) error {
+	//	if r.Method == http.MethodHead {
+	//		return nil
+	//	}
+	//	flog.Info("[route] %+7s %s", r.Method, r.Path)
+	//	return nil
+	//})
 
 	// swagger
-	if swagHandler != nil {
-		httpApp.Get("/swagger/*", swagHandler)
-	}
+	//if swagHandler != nil {
+	//	httpApp.Get("/swagger/*", swagHandler)
+	//}
 
-	// Handle extra
+	// mux router
 	setupMux(httpApp)
 
 	return nil
@@ -267,7 +287,7 @@ func initializeHttp() error {
 
 func initializePprof() error {
 	// Initialize serving debug profiles (optional).
-	pprofs.ServePprof(httpApp, *appFlag.pprofUrl)
+	//pprofs.ServePprof(httpApp, *appFlag.pprofUrl)
 
 	if *appFlag.pprofFile != "" {
 		curwd, err := os.Getwd()
@@ -345,7 +365,7 @@ func initializeMedia() error {
 			if config.App.Media.Handlers != nil {
 				var conf string
 				if params := config.App.Media.Handlers[config.App.Media.UseHandler]; params != nil {
-					data, err := jsoniter.Marshal(params)
+					data, err := sonic.Marshal(params)
 					if err != nil {
 						return fmt.Errorf("failed to marshal media handler, %w", err)
 					}

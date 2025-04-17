@@ -6,15 +6,14 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
+	"github.com/bytedance/sonic"
+	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 	"math/big"
 	"regexp"
 	"runtime"
 	"strings"
 	"unicode"
-
-	"github.com/google/uuid"
 )
 
 func HasHan(txt string) bool {
@@ -126,7 +125,7 @@ func FileAndLine() string {
 }
 
 func PrettyPrintJsonStyle(data any) {
-	d, err := jsoniter.MarshalIndent(data, "", "  ")
+	d, err := sonic.MarshalIndent(data, "", "  ")
 	if err != nil {
 		_, _ = fmt.Println(fmt.Sprintf("error: %s, data: %+v", err, data))
 		return

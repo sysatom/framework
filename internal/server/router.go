@@ -1,24 +1,11 @@
 package server
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/labstack/echo/v4"
+	"github.com/sysatom/framework/internal/controller"
 )
 
-func setupMux(a *fiber.App) {
-	// common
-	//a.Get("/", func(c *fiber.Ctx) error { return nil })
-	//a.All("/oauth/:provider/:flag", storeOAuth)
-	//a.Get("/p/:id", getPage)
-	//// form
-	//a.Post("/form", postForm)
-	//// page
-	//a.Get("/page/:id/:flag", renderPage)
-	//// agent
-	//a.Post("/agent", agentData)
-	//// webhook
-	//a.All("/webhook/:flag", doWebhook)
-	//// platform
-	//a.All("/chatbot/:platform", platformCallback)
+// router
+func setupMux(a *echo.Echo) {
+	a.GET("/hello", controller.Hello)
 }
-
-// handler

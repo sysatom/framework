@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
@@ -10,7 +11,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 	"github.com/ThreeDotsLabs/watermill/message/router/plugin"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/sysatom/framework/pkg/cache"
 	"github.com/sysatom/framework/pkg/flog"
 )
@@ -77,7 +77,7 @@ func NewRouter() (*message.Router, error) {
 }
 
 func NewMessage(payload any) (*message.Message, error) {
-	data, err := jsoniter.Marshal(payload)
+	data, err := sonic.Marshal(payload)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal payload: %w", err)
 	}

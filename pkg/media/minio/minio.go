@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"mime"
 	"net/http"
@@ -12,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	appConfig "github.com/sysatom/framework/pkg/config"
@@ -46,7 +46,7 @@ type handler struct {
 // Init initializes the media handler.
 func (ah *handler) Init(jsconf string) error {
 	var err error
-	if err = jsoniter.Unmarshal([]byte(jsconf), &ah.conf); err != nil {
+	if err = sonic.Unmarshal([]byte(jsconf), &ah.conf); err != nil {
 		return fmt.Errorf("error parsing config: %s", jsconf)
 	}
 

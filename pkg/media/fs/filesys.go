@@ -6,13 +6,13 @@ package fs
 import (
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
 
-	jsoniter "github.com/json-iterator/go"
 	appConfig "github.com/sysatom/framework/pkg/config"
 	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/media"
@@ -42,7 +42,7 @@ func (fh *fshandler) Init(jsconf string) error {
 	var err error
 	var config configType
 
-	if err = jsoniter.Unmarshal([]byte(jsconf), &config); err != nil {
+	if err = sonic.Unmarshal([]byte(jsconf), &config); err != nil {
 		return fmt.Errorf("error parsing config: %s, %w", jsconf, err)
 	}
 

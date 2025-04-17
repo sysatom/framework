@@ -2,12 +2,12 @@ package github
 
 import (
 	"fmt"
+	"github.com/bytedance/sonic"
 	"net/http"
 	"time"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/sysatom/framework/pkg/types"
 )
 
@@ -74,7 +74,7 @@ func (v *Github) GetAccessToken(ctx *fiber.Ctx) (types.KV, error) {
 		return nil, err
 	}
 
-	extra, err := jsoniter.Marshal(&tokenResp)
+	extra, err := sonic.Marshal(&tokenResp)
 	if err != nil {
 		return nil, err
 	}

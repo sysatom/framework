@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 	"fmt"
-	json "github.com/json-iterator/go"
+	"github.com/bytedance/sonic"
 	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/types"
 	"github.com/sysatom/framework/pkg/utils"
@@ -39,7 +39,7 @@ func Unique(ctx context.Context, id string, latest []any) ([]types.KV, error) {
 }
 
 func kvHash(item any) (string, error) {
-	b, err := json.ConfigCompatibleWithStandardLibrary.Marshal(item)
+	b, err := sonic.Marshal(item)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal kv: %w", err)
 	}

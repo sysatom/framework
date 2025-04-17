@@ -2,20 +2,20 @@ package server
 
 import (
 	"context"
+	"github.com/labstack/echo/v4"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/sysatom/framework/pkg/cache"
 	"github.com/sysatom/framework/pkg/flog"
 )
 
-func listenAndServe(app *fiber.App, addr string, stop <-chan bool) error {
+func listenAndServe(app *echo.Echo, addr string, stop <-chan bool) error {
 	globals.shuttingDown = false
 
 	httpdone := make(chan bool)
 
 	go func() {
-		err := app.Listen(addr)
+		err := app.Start(addr)
 		if err != nil {
 			flog.Error(err)
 		}
@@ -31,7 +31,7 @@ Loop:
 			globals.shuttingDown = true
 			// Give server 2 seconds to shut down.
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-			if err := app.ShutdownWithContext(ctx); err != nil {
+			if err := app.Shutdown(ctx); err != nil {
 				// failure/timeout shutting down the server gracefully
 				flog.Error(err)
 			}

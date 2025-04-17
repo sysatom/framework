@@ -1,7 +1,7 @@
 package types
 
 import (
-	jsoniter "github.com/json-iterator/go"
+	"github.com/bytedance/sonic"
 	"reflect"
 )
 
@@ -149,27 +149,27 @@ func ToPayload(typ string, src []byte) MsgPayload {
 	switch typ {
 	case "TextMsg":
 		var r TextMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	case "LinkMsg":
 		var r LinkMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	case "TableMsg":
 		var r TableMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	case "InfoMsg":
 		var r InfoMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	case "ChartMsg":
 		var r ChartMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	case "KVMsg":
 		var r KVMsg
-		_ = jsoniter.Unmarshal(src, &r)
+		_ = sonic.Unmarshal(src, &r)
 		return r
 	}
 	return nil

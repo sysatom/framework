@@ -2,11 +2,11 @@ package flog
 
 import (
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"os"
 	"time"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
 )
@@ -17,8 +17,7 @@ func Init(fileLogEnabled bool) {
 	// error stack
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	// json marshaling
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	zerolog.InterfaceMarshalFunc = json.Marshal
+	zerolog.InterfaceMarshalFunc = sonic.Marshal
 
 	var writer []io.Writer
 	// console
