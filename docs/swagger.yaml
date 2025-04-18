@@ -1,14 +1,57 @@
-basePath: /service
+basePath: /
+definitions:
+  types.KV:
+    additionalProperties: true
+    type: object
+  types.WorkflowTask:
+    properties:
+      action:
+        type: string
+      conn:
+        items:
+          type: string
+        type: array
+      describe:
+        type: string
+      id:
+        type: string
+      params:
+        $ref: '#/definitions/types.KV'
+      vars:
+        items:
+          type: string
+        type: array
+    type: object
 host: localhost:6060
 info:
   contact: {}
-  description: Flowbot Chatbot API
+  description: Bussiness API
   license:
-    name: GPL 3.0
-    url: https://github.com/sysatom/framework/blob/master/LICENSE
-  title: Flowbot API
+    name: Private
+  title: Bussiness API
   version: "1.0"
-paths: {}
+paths:
+  /hello/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.WorkflowTask'
+      summary: Show an account
+      tags:
+      - accounts
 schemes:
 - http
 securityDefinitions:

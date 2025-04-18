@@ -11,14 +11,81 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {},
         "license": {
-            "name": "GPL 3.0",
-            "url": "https://github.com/sysatom/framework/blob/master/LICENSE"
+            "name": "Private"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {},
+    "paths": {
+        "/hello/{id}": {
+            "get": {
+                "description": "get string by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Show an account",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.WorkflowTask"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "types.KV": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "types.WorkflowTask": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "conn": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "describe": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/types.KV"
+                },
+                "vars": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
     "securityDefinitions": {
         "ApiKeyAuth": {
             "description": "access token",
@@ -33,10 +100,10 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:6060",
-	BasePath:         "/service",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
-	Title:            "Flowbot API",
-	Description:      "Flowbot Chatbot API",
+	Title:            "Bussiness API",
+	Description:      "Bussiness API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -6,13 +6,12 @@ import (
 	_ "go.uber.org/automaxprocs"
 )
 
-// @title						Flowbot API
+// @title						Bussiness API
 // @version					1.0
-// @description				Flowbot Chatbot API
-// @license.name				GPL 3.0
-// @license.url				https://github.com/sysatom/framework/blob/master/LICENSE
+// @description				Bussiness API
+// @license.name				Private
 // @host						localhost:6060
-// @BasePath					/service
+// @BasePath					/
 // @schemes					http
 // @securityDefinitions.apikey	ApiKeyAuth
 // @in							header

@@ -3,10 +3,10 @@
 package server
 
 import (
-	"github.com/gofiber/swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "github.com/sysatom/framework/docs"
 )
 
 func init() {
-	swagHandler = swagger.HandlerDefault
+	swagHandler = echoSwagger.WrapHandler
 }

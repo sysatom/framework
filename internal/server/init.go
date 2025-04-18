@@ -4,8 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"runtime"
+	"runtime/pprof"
+	"strings"
+	"time"
+
 	"github.com/bytedance/sonic"
-	"github.com/gofiber/fiber/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/pflag"
@@ -18,20 +25,13 @@ import (
 	"github.com/sysatom/framework/version"
 	"github.com/ziflex/lecho/v3"
 	"golang.org/x/time/rate"
-	"log"
-	"net/http"
-	"os"
-	"runtime"
-	"runtime/pprof"
-	"strings"
-	"time"
 )
 
 var (
 	// stop signal
 	stopSignal <-chan bool
 	// swagger
-	swagHandler fiber.Handler
+	swagHandler echo.HandlerFunc
 	// web app
 	httpApp *echo.Echo
 	// flag variables
@@ -293,9 +293,9 @@ func initializeHttp() error {
 	//})
 
 	// swagger
-	//if swagHandler != nil {
-	//	httpApp.Get("/swagger/*", swagHandler)
-	//}
+	if swagHandler != nil {
+		httpApp.GET("/swagger/*", swagHandler)
+	}
 
 	// mux router
 	setupMux(httpApp)
