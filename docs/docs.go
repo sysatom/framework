@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.WorkflowTask"
+                            "$ref": "#/definitions/types.FileDef"
                         }
                     }
                 }
@@ -52,36 +52,43 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "types.KV": {
-            "type": "object",
-            "additionalProperties": true
-        },
-        "types.WorkflowTask": {
+        "types.FileDef": {
             "type": "object",
             "properties": {
-                "action": {
-                    "type": "string"
-                },
-                "conn": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "describe": {
+                "createdAt": {
+                    "description": "id        Uid",
                     "type": "string"
                 },
                 "id": {
+                    "description": "using string to get around rethinkdb's problems with uint64;\n` + "`" + `bson:\"_id\"` + "`" + ` tag is for mongodb to use as primary key '_id'.",
                     "type": "string"
                 },
-                "params": {
-                    "$ref": "#/definitions/types.KV"
+                "location": {
+                    "description": "Internal file location, i.e. path on disk or an S3 blob address.",
+                    "type": "string"
                 },
-                "vars": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "mimeType": {
+                    "description": "Type of the file.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the file",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "Size of the file in bytes.",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Status of upload",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "User who created the file",
+                    "type": "string"
                 }
             }
         }

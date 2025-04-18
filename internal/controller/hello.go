@@ -8,13 +8,14 @@ import (
 )
 
 // ShowAccount godoc
+//
 //	@Summary		Show an account
 //	@Description	get string by ID
 //	@Tags			accounts
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		int	true	"Account ID"
-//	@Success		200	{object}	types.WorkflowTask
+//	@Success		200	{object}	types.FileDef
 //	@Router			/hello/{id} [get]
 func Hello(c echo.Context) error {
 	return c.JSON(http.StatusOK, protocol.NewSuccessResponse(types.KV{"hello": "world"}))

@@ -1,9 +1,16 @@
 package main
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/sysatom/framework/internal/server"
+	"github.com/sysatom/framework/pkg/flog"
+	"github.com/sysatom/framework/pkg/zlog"
+
 	// Importing automaxprocs automatically adjusts GOMAXPROCS.
 	_ "go.uber.org/automaxprocs"
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
+	"go.uber.org/zap"
 )
 
 // @title						Bussiness API
@@ -18,5 +25,16 @@ import (
 // @name						X-AccessToken
 // @description				access token
 func main() {
-	server.Run()
+	// initialize
+	if err := server.Initialize(); err != nil {
+		flog.Fatal("initialize %v", err)
+	}
+	// serve
+	fx.New(
+		fx.Provide(server.NewHTTPServer, zlog.NewZlog),
+		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{Logger: log}
+		}),
+		fx.Invoke(func(*echo.Echo) {}),
+	).Run()
 }

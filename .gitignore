@@ -10,10 +10,6 @@
 /script
 /dist
 
-flowbot.json
-flowbot.yaml
-flowbot.log
-flowbot-agent.yaml
+config.yaml
 main
-flowbot
 *.tmp

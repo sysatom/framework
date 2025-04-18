@@ -1,26 +1,35 @@
 basePath: /
 definitions:
-  types.KV:
-    additionalProperties: true
-    type: object
-  types.WorkflowTask:
+  types.FileDef:
     properties:
-      action:
-        type: string
-      conn:
-        items:
-          type: string
-        type: array
-      describe:
+      createdAt:
+        description: id        Uid
         type: string
       id:
+        description: |-
+          using string to get around rethinkdb's problems with uint64;
+          `bson:"_id"` tag is for mongodb to use as primary key '_id'.
         type: string
-      params:
-        $ref: '#/definitions/types.KV'
-      vars:
-        items:
-          type: string
-        type: array
+      location:
+        description: Internal file location, i.e. path on disk or an S3 blob address.
+        type: string
+      mimeType:
+        description: Type of the file.
+        type: string
+      name:
+        description: Name of the file
+        type: string
+      size:
+        description: Size of the file in bytes.
+        type: integer
+      status:
+        description: Status of upload
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        description: User who created the file
+        type: string
     type: object
 host: localhost:6060
 info:
@@ -48,7 +57,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.WorkflowTask'
+            $ref: '#/definitions/types.FileDef'
       summary: Show an account
       tags:
       - accounts

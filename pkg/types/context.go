@@ -11,43 +11,8 @@ type Context struct {
 	// cancel function
 	cancel context.CancelFunc
 
-	// Message ID denormalized
-	Id string
-	// chat platform
-	Platform string
-	// channel or group
-	Topic string
 	// Sender's UserId as string.
 	AsUser Uid
-
-	// form Rule id
-	FormRuleId string
-	// form id
-	FormId string
-
-	// agent rule id
-	CollectRuleId string
-	// agent
-	AgentVersion int
-
-	// page rule id
-	PageRuleId string
-
-	// workflow rule id
-	WorkflowRuleId string
-
-	// llm tool rule id
-	ToolRuleId string
-
-	// event rule id
-	EventRuleId string
-
-	// webhook rule id
-	WebhookRuleId string
-	// HTTP method
-	Method string
-	// HTTP headers
-	Headers map[string][]string
 }
 
 func (c *Context) Context() context.Context {

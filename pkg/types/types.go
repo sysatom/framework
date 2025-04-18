@@ -10,27 +10,5 @@ func Id() string {
 }
 
 func AppUrl() string {
-	return config.App.Flowbot.URL
+	return config.App.URL
 }
-
-type Ruler interface {
-	ID() string
-	TYPE() RulesetType
-}
-
-type RulesetType string
-
-const (
-	CollectRule    RulesetType = "collect"
-	CommandRule    RulesetType = "command"
-	CronRule       RulesetType = "cron"
-	EventRule      RulesetType = "event"
-	FormRule       RulesetType = "form"
-	InstructRule   RulesetType = "instruct"
-	PageRule       RulesetType = "page"
-	SettingRule    RulesetType = "setting"
-	ToolRule       RulesetType = "tool"
-	WebhookRule    RulesetType = "webhook"
-	WebserviceRule RulesetType = "webservice"
-	WorkflowRule   RulesetType = "workflow"
-)
