@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"github.com/sysatom/framework/pkg/flog"
 )
 
 const EmbedServerPort = "5678"
@@ -20,18 +20,18 @@ func CheckSingleton() {
 		resp, err := resty.New().SetTimeout(500 * time.Millisecond).R().
 			Get(fmt.Sprintf("http://127.0.0.1:%s/health", EmbedServerPort))
 		if err != nil {
-			flog.Error(err)
+			log.Println(err)
 			return
 		}
 		if resp.String() == "ok" {
-			flog.Fatal("app exists")
+			log.Fatal("app exists")
 		}
 	}
 }
 
 func EmbedServer() {
 	go func() {
-		flog.Info("embed server http://127.0.0.1:%v", EmbedServerPort)
+		log.Printf("embed server http://127.0.0.1:%v\n", EmbedServerPort)
 
 		app := fiber.New(fiber.Config{DisableStartupMessage: true})
 		app.Use(cors.New())
@@ -43,7 +43,7 @@ func EmbedServer() {
 
 		err := app.Listen(net.JoinHostPort("127.0.0.1", EmbedServerPort))
 		if err != nil {
-			flog.Fatal("embed server error")
+			log.Fatal("embed server error")
 		}
 	}()
 }

@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/sysatom/framework/internal/server"
-	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/rdb"
 	"github.com/sysatom/framework/pkg/zlog"
 
@@ -26,7 +27,7 @@ import (
 func main() {
 	// initialize
 	if err := server.Initialize(); err != nil {
-		flog.Fatal("initialize %v", err)
+		log.Fatalf("initialize %v", err)
 	}
 	// serve
 	fx.New(

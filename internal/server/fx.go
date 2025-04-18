@@ -14,7 +14,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sysatom/framework/pkg/config"
-	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/utils"
 	"github.com/sysatom/framework/version"
 	"go.uber.org/fx"
@@ -34,13 +33,13 @@ func Initialize() error {
 	if err = initializeTimezone(); err != nil {
 		return err
 	}
-	flog.Info("initialize Timezone ok")
+	log.Println("initialize Timezone ok")
 
 	// init config
 	if err = initializeConfig(); err != nil {
 		return err
 	}
-	flog.Info("initialize Config ok")
+	log.Println("initialize Config ok")
 
 	return nil
 }
@@ -58,15 +57,15 @@ func initializeConfig() error {
 
 	curwd, err := os.Getwd()
 	if err != nil {
-		flog.Fatal("Couldn't get current working directory: %v", err)
+		log.Fatal("Couldn't get current working directory: %v", err)
 	}
 
-	flog.Info("version %s:%s:%s; pid %d; %d process(es)",
+	log.Printf("version %s:%s:%s; pid %d; %d process(es)\n",
 		version.Buildtags, executable, version.Buildstamp,
 		os.Getpid(), runtime.GOMAXPROCS(runtime.NumCPU()))
 
 	configFile := utils.ToAbsolutePath(curwd, "config.yaml")
-	flog.Info("Using config from '%s'", configFile)
+	log.Printf("Using config from '%s'\n", configFile)
 
 	// Load config
 	config.Load(".", curwd)
@@ -82,10 +81,10 @@ func initializeConfig() error {
 			config.App.ApiPath += "/"
 		}
 	}
-	flog.Info("API served from root URL path '%s'", config.App.ApiPath)
+	log.Printf("API served from root URL path '%s'\n", config.App.ApiPath)
 
 	// log level
-	flog.SetLevel(config.App.Log.Level)
+	// flog.SetLevel(config.App.Log.Level)
 
 	return nil
 }
