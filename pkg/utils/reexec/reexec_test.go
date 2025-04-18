@@ -2,18 +2,18 @@ package reexec // import "github.com/docker/docker/pkg/reexec"
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime/debug"
 	"testing"
 
-	"github.com/sysatom/framework/pkg/flog"
 	"gotest.tools/v3/assert"
 )
 
 func init() {
 	Register("reexec", func() {
-		flog.Fatal("Return Error")
+		log.Fatal("Return Error")
 	})
 	Init()
 }

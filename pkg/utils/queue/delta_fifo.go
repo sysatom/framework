@@ -3,9 +3,9 @@ package queue
 import (
 	"errors"
 	"fmt"
+	"log"
 	"sync"
 
-	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/utils/sets"
 	"golang.org/x/xerrors"
 )
@@ -402,10 +402,10 @@ func (f *DeltaFIFO) queueActionLocked(actionType DeltaType, obj any) error {
 		// when given a non-empty list (as it is here).
 		// If somehow it happens anyway, deal with it but complain.
 		if oldDeltas == nil {
-			flog.Error(fmt.Errorf("impossible dedupDeltas for id=%q: oldDeltas=%#+v, obj=%#+v; ignoring", id, oldDeltas, obj))
+			log.Println(fmt.Errorf("impossible dedupDeltas for id=%q: oldDeltas=%#+v, obj=%#+v; ignoring", id, oldDeltas, obj))
 			return nil
 		}
-		flog.Error(fmt.Errorf("impossible dedupDeltas for id=%q: oldDeltas=%#+v, obj=%#+v; breaking invariant by storing empty Deltas", id, oldDeltas, obj))
+		log.Println(fmt.Errorf("impossible dedupDeltas for id=%q: oldDeltas=%#+v, obj=%#+v; breaking invariant by storing empty Deltas", id, oldDeltas, obj))
 		f.items[id] = newDeltas
 		return xerrors.Errorf("impossible dedupDeltas for id=%q: oldDeltas=%#+v, obj=%#+v; broke DeltaFIFO invariant by storing empty Deltas", id, oldDeltas, obj)
 	}
@@ -509,7 +509,7 @@ func (f *DeltaFIFO) Pop(process PopProcessFunc) (any, error) {
 		item, ok := f.items[id]
 		if !ok {
 			// This should never happen
-			flog.Error(fmt.Errorf("inconceivable! %q was in f.queue but not f.items; ignoring", id))
+			log.Println(fmt.Errorf("inconceivable! %q was in f.queue but not f.items; ignoring", id))
 			continue
 		}
 		delete(f.items, id)
@@ -518,7 +518,7 @@ func (f *DeltaFIFO) Pop(process PopProcessFunc) (any, error) {
 		// Queue depth never goes high because processing an item is locking the queue,
 		// and new items can't be added until processing finish.
 		if depth > 10 {
-			flog.Warn("DeltaFIFO depth %d", depth)
+			log.Printf("DeltaFIFO depth %d", depth)
 		}
 		err := process(item)
 		var e ErrRequeue
@@ -606,10 +606,10 @@ func (f *DeltaFIFO) Replace(list []any, _ string) error {
 		deletedObj, exists, err := f.knownObjects.GetByKey(k)
 		if err != nil {
 			deletedObj = nil
-			flog.Error(fmt.Errorf("unexpected error %w during lookup of key %v, placing DeleteFinalStateUnknown marker without object", err, k))
+			log.Println(fmt.Errorf("unexpected error %w during lookup of key %v, placing DeleteFinalStateUnknown marker without object", err, k))
 		} else if !exists {
 			deletedObj = nil
-			flog.Info("Key %v does not exist in known objects store, placing DeleteFinalStateUnknown marker without object", k)
+			log.Printf("Key %v does not exist in known objects store, placing DeleteFinalStateUnknown marker without object", k)
 		}
 		queuedDeletions++
 		if err := f.queueActionLocked(Deleted, DeletedFinalStateUnknown{k, deletedObj}); err != nil {
@@ -648,10 +648,10 @@ func (f *DeltaFIFO) Resync() error {
 func (f *DeltaFIFO) syncKeyLocked(key string) error {
 	obj, exists, err := f.knownObjects.GetByKey(key)
 	if err != nil {
-		flog.Error(fmt.Errorf("unexpected error %w during lookup of key %v, unable to queue object for sync", err, key))
+		log.Println(fmt.Errorf("unexpected error %w during lookup of key %v, unable to queue object for sync", err, key))
 		return nil
 	} else if !exists {
-		flog.Info("Key %v does not exist in known objects store, unable to queue object for sync", key)
+		log.Printf("Key %v does not exist in known objects store, unable to queue object for sync", key)
 		return nil
 	}
 

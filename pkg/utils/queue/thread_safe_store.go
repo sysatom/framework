@@ -1,9 +1,9 @@
 package queue
 
 import (
+	"log"
 	"sync"
 
-	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/utils/sets"
 	"golang.org/x/xerrors"
 )
@@ -247,7 +247,7 @@ func (c *threadSafeMap) updateIndices(oldObj any, newObj any, key string) {
 			oldIndexValues = oldIndexValues[:0]
 		}
 		if err != nil {
-			flog.Panic("unable to calculate an index entry for key %q on index %q: %v", key, name, err)
+			log.Panicf("unable to calculate an index entry for key %q on index %q: %v", key, name, err)
 		}
 
 		if newObj != nil {
@@ -256,7 +256,7 @@ func (c *threadSafeMap) updateIndices(oldObj any, newObj any, key string) {
 			indexValues = indexValues[:0]
 		}
 		if err != nil {
-			flog.Panic("unable to calculate an index entry for key %q on index %q: %v", key, name, err)
+			log.Panicf("unable to calculate an index entry for key %q on index %q: %v", key, name, err)
 		}
 
 		index := c.indices[name]

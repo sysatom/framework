@@ -5,11 +5,10 @@
 package reexec // import "github.com/docker/docker/pkg/reexec"
 
 import (
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
-
-	"github.com/sysatom/framework/pkg/flog"
 )
 
 var registeredInitializers = make(map[string]func())
@@ -17,7 +16,7 @@ var registeredInitializers = make(map[string]func())
 // Register adds an initialization func under the specified name
 func Register(name string, initializer func()) {
 	if _, exists := registeredInitializers[name]; exists {
-		flog.Fatal("reexec func already registered under name %q", name)
+		log.Fatalf("reexec func already registered under name %q", name)
 	}
 
 	registeredInitializers[name] = initializer

@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"net/http"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/utils/clock"
 )
 
@@ -109,9 +109,9 @@ func logPanic(r interface{}) {
 	stacktrace := make([]byte, size)
 	stacktrace = stacktrace[:runtime.Stack(stacktrace, false)]
 	if _, ok := r.(string); ok {
-		flog.Error(fmt.Errorf("Observed a panic: %s\n%s", r, stacktrace))
+		log.Println(fmt.Errorf("Observed a panic: %s\n%s", r, stacktrace))
 	} else {
-		flog.Error(fmt.Errorf("Observed a panic: %#v (%v)\n%s", r, r, stacktrace))
+		log.Println(fmt.Errorf("Observed a panic: %#v (%v)\n%s", r, r, stacktrace))
 	}
 }
 
@@ -126,7 +126,7 @@ func HandleCrash(additionalHandlers ...func(interface{})) {
 		}
 		if ReallyCrash {
 			// Actually proceed to panic.
-			flog.Panic("%v", r)
+			log.Panicf("%v", r)
 		}
 	}
 }
