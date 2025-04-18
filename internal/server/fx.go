@@ -57,7 +57,7 @@ func initializeConfig() error {
 
 	curwd, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Couldn't get current working directory: %v", err)
+		log.Fatalf("Couldn't get current working directory: %v", err)
 	}
 
 	log.Printf("version %s:%s:%s; pid %d; %d process(es)\n",
