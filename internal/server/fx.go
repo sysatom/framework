@@ -25,8 +25,6 @@ import (
 var (
 	// swagger
 	swagHandler echo.HandlerFunc
-	// web app
-	httpApp *echo.Echo
 )
 
 func Initialize() error {
@@ -94,14 +92,14 @@ func initializeConfig() error {
 
 func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 	// Set up HTTP server.
-	httpApp = echo.New()
+	httpServer := echo.New()
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			// setting
-			httpApp.HideBanner = true
-			httpApp.JSONSerializer = &DefaultJSONSerializer{}
-			httpApp.HTTPErrorHandler = func(err error, c echo.Context) {
+			httpServer.HideBanner = true
+			httpServer.JSONSerializer = &DefaultJSONSerializer{}
+			httpServer.HTTPErrorHandler = func(err error, c echo.Context) {
 				if c.Response().Committed {
 					return
 				}
@@ -126,7 +124,7 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 
 				switch m := he.Message.(type) {
 				case string:
-					if httpApp.Debug {
+					if httpServer.Debug {
 						message = echo.Map{"message": m, "error": err.Error()}
 					} else {
 						message = echo.Map{"message": m}
@@ -144,17 +142,17 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 					err = c.JSON(code, message)
 				}
 				if err != nil {
-					httpApp.Logger.Error(err)
+					httpServer.Logger.Error(err)
 				}
 			}
 
 			// middleware
-			httpApp.Use(middleware.CORS())
-			httpApp.Use(middleware.Recover())
-			httpApp.Use(middleware.Decompress())
-			httpApp.Use(middleware.Gzip())
-			httpApp.Use(middleware.RequestID())
-			httpApp.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+			httpServer.Use(middleware.CORS())
+			httpServer.Use(middleware.Recover())
+			httpServer.Use(middleware.Decompress())
+			httpServer.Use(middleware.Gzip())
+			httpServer.Use(middleware.RequestID())
+			httpServer.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
 				Skipper:      middleware.DefaultSkipper,
 				ErrorMessage: "custom timeout error message returns to client",
 				OnTimeoutRouteErrorHandler: func(err error, c echo.Context) {
@@ -162,8 +160,8 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 				},
 				Timeout: 30 * time.Second, // TODO config
 			}))
-			httpApp.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(200)))) // TODO rate limiter config
-			httpApp.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+			httpServer.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(200)))) // TODO rate limiter config
+			httpServer.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 				LogURI:    true,
 				LogStatus: true,
 				Skipper: func(c echo.Context) bool {
@@ -182,20 +180,20 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 
 			// swagger
 			if swagHandler != nil {
-				httpApp.GET("/swagger/*", swagHandler)
+				httpServer.GET("/swagger/*", swagHandler)
 			}
 
 			// router
-			setupRouter(httpApp)
+			setupRouter(httpServer)
 
-			go httpApp.Start(config.App.Listen)
+			go httpServer.Start(config.App.Listen)
 
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			return httpApp.Shutdown(ctx)
+			return httpServer.Shutdown(ctx)
 		},
 	})
 
-	return httpApp
+	return httpServer
 }
