@@ -14,7 +14,6 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/sysatom/framework/pkg/cache"
 	"github.com/sysatom/framework/pkg/config"
 	"github.com/sysatom/framework/pkg/flog"
 	"github.com/sysatom/framework/pkg/utils"
@@ -34,12 +33,6 @@ var (
 func Initialize() error {
 	var err error
 
-	// init log
-	if err = initializeLog(); err != nil {
-		return err
-	}
-	flog.Info("initialize Log ok")
-
 	// init timezone
 	if err = initializeTimezone(); err != nil {
 		return err
@@ -51,12 +44,6 @@ func Initialize() error {
 		return err
 	}
 	flog.Info("initialize Config ok")
-
-	// init cache
-	if err = initializeCache(); err != nil {
-		return err
-	}
-	flog.Info("initialize Cache ok")
 
 	// init database
 	if err = initializeDatabase(); err != nil {
@@ -70,11 +57,6 @@ func Initialize() error {
 	}
 	flog.Info("initialize Media ok")
 
-	return nil
-}
-
-func initializeLog() error {
-	flog.Init(false)
 	return nil
 }
 
@@ -121,30 +103,6 @@ func initializeConfig() error {
 	flog.SetLevel(config.App.Log.Level)
 
 	return nil
-}
-
-// DefaultJSONSerializer implements JSON encoding using encoding/json.
-type DefaultJSONSerializer struct{}
-
-// Serialize converts an interface into a json and writes it to the response.
-// You can optionally use the indent parameter to produce pretty JSONs.
-func (d DefaultJSONSerializer) Serialize(c echo.Context, i interface{}, indent string) error {
-	enc := sonic.ConfigDefault.NewEncoder(c.Response())
-	if indent != "" {
-		enc.SetIndent("", indent)
-	}
-	return enc.Encode(i)
-}
-
-// Deserialize reads a JSON from a request body and converts it into an interface.
-func (d DefaultJSONSerializer) Deserialize(c echo.Context, i interface{}) error {
-	err := sonic.ConfigDefault.NewDecoder(c.Request().Body).Decode(i)
-	if ute, ok := err.(*json.UnmarshalTypeError); ok {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Unmarshal type error: expected=%v, got=%v, field=%v, offset=%v", ute.Type, ute.Value, ute.Field, ute.Offset)).SetInternal(err)
-	} else if se, ok := err.(*json.SyntaxError); ok {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Syntax error: offset=%v, error=%v", se.Offset, se.Error())).SetInternal(err)
-	}
-	return err
 }
 
 func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
@@ -240,8 +198,8 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 				httpApp.GET("/swagger/*", swagHandler)
 			}
 
-			// mux router
-			setupMux(httpApp)
+			// router
+			setupRouter(httpApp)
 
 			go httpApp.Start(config.App.Listen)
 
@@ -253,11 +211,6 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 	})
 
 	return httpApp
-}
-
-func initializeCache() error {
-	// init cache
-	return cache.InitCache()
 }
 
 func initializeDatabase() error {

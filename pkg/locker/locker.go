@@ -5,15 +5,15 @@ import (
 	"time"
 
 	"github.com/bsm/redislock"
-	"github.com/sysatom/framework/pkg/cache"
+	"github.com/redis/go-redis/v9"
 )
 
 type Locker struct {
 	lock *redislock.Client
 }
 
-func NewLocker() *Locker {
-	return &Locker{lock: redislock.New(cache.DB)}
+func NewLocker(client *redis.Client) *Locker {
+	return &Locker{lock: redislock.New(client)}
 }
 
 func (l *Locker) Acquire(ctx context.Context, key string, ttl time.Duration) (*redislock.Lock, error) {

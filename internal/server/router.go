@@ -7,7 +7,7 @@ import (
 )
 
 // router
-func setupMux(a *echo.Echo) {
+func setupRouter(a *echo.Echo) {
 	a.GET("/hello", controller.Hello)
 
 	g := a.Group("/auth")
