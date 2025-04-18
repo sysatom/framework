@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bytedance/sonic"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sysatom/framework/pkg/config"
@@ -44,18 +43,6 @@ func Initialize() error {
 		return err
 	}
 	flog.Info("initialize Config ok")
-
-	// init database
-	if err = initializeDatabase(); err != nil {
-		return err
-	}
-	flog.Info("initialize Database ok")
-
-	// init media
-	if err = initializeMedia(); err != nil {
-		return err
-	}
-	flog.Info("initialize Media ok")
 
 	return nil
 }
@@ -211,66 +198,4 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 	})
 
 	return httpApp
-}
-
-func initializeDatabase() error {
-	//// init database
-	//mysql.Init()
-	//store.Init()
-	//
-	//// Open database
-	//err := store.Store.Open(config.App.Store)
-	//if err != nil {
-	//	return fmt.Errorf("failed to open DB, %w", err)
-	//}
-	//go func() {
-	//	<-stopSignal
-	//	err = store.Store.Close()
-	//	if err != nil {
-	//		flog.Error(err)
-	//	}
-	//	flog.Debug("Closed database connection(s)")
-	//}()
-	//
-	//// migrate
-	//if err := store.Migrate(); err != nil {
-	//	return fmt.Errorf("failed to migrate DB, %w", err)
-	//}
-
-	return nil
-}
-
-func initializeMedia() error {
-	// Media
-	if config.App.Media != nil {
-		if config.App.Media.UseHandler == "" {
-			config.App.Media = nil
-		} else {
-			globals.maxFileUploadSize = config.App.Media.MaxFileUploadSize
-			if config.App.Media.Handlers != nil {
-				var conf string
-				if params := config.App.Media.Handlers[config.App.Media.UseHandler]; params != nil {
-					data, err := sonic.Marshal(params)
-					if err != nil {
-						return fmt.Errorf("failed to marshal media handler, %w", err)
-					}
-					conf = string(data)
-				}
-				_, _ = fmt.Println(conf) // FIXME
-				//if err := store.UseMediaHandler(config.App.Media.UseHandler, conf); err != nil {
-				//	return fmt.Errorf("failed to init media handler, %w", err)
-				//}
-			}
-			if config.App.Media.GcPeriod > 0 && config.App.Media.GcBlockSize > 0 {
-				globals.mediaGcPeriod = time.Second * time.Duration(config.App.Media.GcPeriod)
-				stopFilesGc := largeFileRunGarbageCollection(globals.mediaGcPeriod, config.App.Media.GcBlockSize)
-				go func() {
-					// <-stopSignal FIXME
-					stopFilesGc <- true
-					flog.Info("Stopped files garbage collector")
-				}()
-			}
-		}
-	}
-	return nil
 }
