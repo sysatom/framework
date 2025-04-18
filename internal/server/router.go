@@ -9,6 +9,7 @@ import (
 // router
 func setupRouter(a *echo.Echo) {
 	a.GET("/hello", controller.Hello)
+	a.GET("/validate", controller.Validate)
 
 	g := a.Group("/auth")
 	g.Use(echojwt.WithConfig(echojwt.Config{
