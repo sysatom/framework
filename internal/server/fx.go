@@ -185,7 +185,12 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 			// router
 			setupRouter(httpServer)
 
-			go httpServer.Start(config.App.Listen)
+			go func() {
+				err := httpServer.Start(config.App.Listen)
+				if err != nil {
+					logger.Panic(err.Error())
+				}
+			}()
 
 			return nil
 		},

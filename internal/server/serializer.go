@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -25,9 +26,12 @@ func (d DefaultJSONSerializer) Serialize(c echo.Context, i interface{}, indent s
 // Deserialize reads a JSON from a request body and converts it into an interface.
 func (d DefaultJSONSerializer) Deserialize(c echo.Context, i interface{}) error {
 	err := sonic.ConfigDefault.NewDecoder(c.Request().Body).Decode(i)
-	if ute, ok := err.(*json.UnmarshalTypeError); ok {
+	var ute *json.UnmarshalTypeError
+	if errors.As(err, &ute) {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Unmarshal type error: expected=%v, got=%v, field=%v, offset=%v", ute.Type, ute.Value, ute.Field, ute.Offset)).SetInternal(err)
-	} else if se, ok := err.(*json.SyntaxError); ok {
+	}
+	var se *json.SyntaxError
+	if errors.As(err, &se) {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Syntax error: offset=%v, error=%v", se.Offset, se.Error())).SetInternal(err)
 	}
 	return err
