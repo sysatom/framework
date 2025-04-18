@@ -5,7 +5,7 @@ import (
 )
 
 func NewZlog() *zap.Logger {
-	logger, _ := zap.NewProduction()
+	logger, _ := zap.NewProduction(zap.WithCaller(true))
 	// defer logger.Sync() // flushes buffer, if any
 	return logger
 }
