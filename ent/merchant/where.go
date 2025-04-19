@@ -11,47 +11,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Merchant {
+func ID(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Merchant {
+func IDEQ(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Merchant {
+func IDNEQ(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Merchant {
+func IDIn(ids ...uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Merchant {
+func IDNotIn(ids ...uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Merchant {
+func IDGT(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Merchant {
+func IDGTE(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Merchant {
+func IDLT(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Merchant {
+func IDLTE(id uint64) predicate.Merchant {
 	return predicate.Merchant(sql.FieldLTE(FieldID, id))
 }
 

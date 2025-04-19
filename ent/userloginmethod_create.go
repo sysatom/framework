@@ -31,6 +31,20 @@ func (ulmc *UserLoginMethodCreate) SetIdentifier(s string) *UserLoginMethodCreat
 	return ulmc
 }
 
+// SetID sets the "id" field.
+func (ulmc *UserLoginMethodCreate) SetID(u uint64) *UserLoginMethodCreate {
+	ulmc.mutation.SetID(u)
+	return ulmc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ulmc *UserLoginMethodCreate) SetNillableID(u *uint64) *UserLoginMethodCreate {
+	if u != nil {
+		ulmc.SetID(*u)
+	}
+	return ulmc
+}
+
 // Mutation returns the UserLoginMethodMutation object of the builder.
 func (ulmc *UserLoginMethodCreate) Mutation() *UserLoginMethodMutation {
 	return ulmc.mutation
@@ -38,6 +52,7 @@ func (ulmc *UserLoginMethodCreate) Mutation() *UserLoginMethodMutation {
 
 // Save creates the UserLoginMethod in the database.
 func (ulmc *UserLoginMethodCreate) Save(ctx context.Context) (*UserLoginMethod, error) {
+	ulmc.defaults()
 	return withHooks(ctx, ulmc.sqlSave, ulmc.mutation, ulmc.hooks)
 }
 
@@ -63,6 +78,14 @@ func (ulmc *UserLoginMethodCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ulmc *UserLoginMethodCreate) defaults() {
+	if _, ok := ulmc.mutation.ID(); !ok {
+		v := userloginmethod.DefaultID()
+		ulmc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ulmc *UserLoginMethodCreate) check() error {
 	if _, ok := ulmc.mutation.LoginType(); !ok {
@@ -85,8 +108,10 @@ func (ulmc *UserLoginMethodCreate) sqlSave(ctx context.Context) (*UserLoginMetho
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = uint64(id)
+	}
 	ulmc.mutation.id = &_node.ID
 	ulmc.mutation.done = true
 	return _node, nil
@@ -95,8 +120,12 @@ func (ulmc *UserLoginMethodCreate) sqlSave(ctx context.Context) (*UserLoginMetho
 func (ulmc *UserLoginMethodCreate) createSpec() (*UserLoginMethod, *sqlgraph.CreateSpec) {
 	var (
 		_node = &UserLoginMethod{config: ulmc.config}
-		_spec = sqlgraph.NewCreateSpec(userloginmethod.Table, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(userloginmethod.Table, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	)
+	if id, ok := ulmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := ulmc.mutation.LoginType(); ok {
 		_spec.SetField(userloginmethod.FieldLoginType, field.TypeString, value)
 		_node.LoginType = value
@@ -126,6 +155,7 @@ func (ulmcb *UserLoginMethodCreateBulk) Save(ctx context.Context) ([]*UserLoginM
 	for i := range ulmcb.builders {
 		func(i int, root context.Context) {
 			builder := ulmcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserLoginMethodMutation)
 				if !ok {
@@ -152,9 +182,9 @@ func (ulmcb *UserLoginMethodCreateBulk) Save(ctx context.Context) ([]*UserLoginM
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = uint64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

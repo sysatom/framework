@@ -183,14 +183,14 @@ func (mu *MerchantUpdate) ClearAddress() *MerchantUpdate {
 }
 
 // AddAccountIDs adds the "accounts" edge to the MerchantAccount entity by IDs.
-func (mu *MerchantUpdate) AddAccountIDs(ids ...int) *MerchantUpdate {
+func (mu *MerchantUpdate) AddAccountIDs(ids ...uint64) *MerchantUpdate {
 	mu.mutation.AddAccountIDs(ids...)
 	return mu
 }
 
 // AddAccounts adds the "accounts" edges to the MerchantAccount entity.
 func (mu *MerchantUpdate) AddAccounts(m ...*MerchantAccount) *MerchantUpdate {
-	ids := make([]int, len(m))
+	ids := make([]uint64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -209,14 +209,14 @@ func (mu *MerchantUpdate) ClearAccounts() *MerchantUpdate {
 }
 
 // RemoveAccountIDs removes the "accounts" edge to MerchantAccount entities by IDs.
-func (mu *MerchantUpdate) RemoveAccountIDs(ids ...int) *MerchantUpdate {
+func (mu *MerchantUpdate) RemoveAccountIDs(ids ...uint64) *MerchantUpdate {
 	mu.mutation.RemoveAccountIDs(ids...)
 	return mu
 }
 
 // RemoveAccounts removes "accounts" edges to MerchantAccount entities.
 func (mu *MerchantUpdate) RemoveAccounts(m ...*MerchantAccount) *MerchantUpdate {
-	ids := make([]int, len(m))
+	ids := make([]uint64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -251,7 +251,7 @@ func (mu *MerchantUpdate) ExecX(ctx context.Context) {
 }
 
 func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(merchant.Table, merchant.Columns, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(merchant.Table, merchant.Columns, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64))
 	if ps := mu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -312,7 +312,7 @@ func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -325,7 +325,7 @@ func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -341,7 +341,7 @@ func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -524,14 +524,14 @@ func (muo *MerchantUpdateOne) ClearAddress() *MerchantUpdateOne {
 }
 
 // AddAccountIDs adds the "accounts" edge to the MerchantAccount entity by IDs.
-func (muo *MerchantUpdateOne) AddAccountIDs(ids ...int) *MerchantUpdateOne {
+func (muo *MerchantUpdateOne) AddAccountIDs(ids ...uint64) *MerchantUpdateOne {
 	muo.mutation.AddAccountIDs(ids...)
 	return muo
 }
 
 // AddAccounts adds the "accounts" edges to the MerchantAccount entity.
 func (muo *MerchantUpdateOne) AddAccounts(m ...*MerchantAccount) *MerchantUpdateOne {
-	ids := make([]int, len(m))
+	ids := make([]uint64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -550,14 +550,14 @@ func (muo *MerchantUpdateOne) ClearAccounts() *MerchantUpdateOne {
 }
 
 // RemoveAccountIDs removes the "accounts" edge to MerchantAccount entities by IDs.
-func (muo *MerchantUpdateOne) RemoveAccountIDs(ids ...int) *MerchantUpdateOne {
+func (muo *MerchantUpdateOne) RemoveAccountIDs(ids ...uint64) *MerchantUpdateOne {
 	muo.mutation.RemoveAccountIDs(ids...)
 	return muo
 }
 
 // RemoveAccounts removes "accounts" edges to MerchantAccount entities.
 func (muo *MerchantUpdateOne) RemoveAccounts(m ...*MerchantAccount) *MerchantUpdateOne {
-	ids := make([]int, len(m))
+	ids := make([]uint64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -605,7 +605,7 @@ func (muo *MerchantUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err error) {
-	_spec := sqlgraph.NewUpdateSpec(merchant.Table, merchant.Columns, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(merchant.Table, merchant.Columns, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64))
 	id, ok := muo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Merchant.id" for update`)}
@@ -683,7 +683,7 @@ func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -696,7 +696,7 @@ func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -712,7 +712,7 @@ func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

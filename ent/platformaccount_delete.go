@@ -40,7 +40,7 @@ func (pad *PlatformAccountDelete) ExecX(ctx context.Context) int {
 }
 
 func (pad *PlatformAccountDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(platformaccount.Table, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(platformaccount.Table, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeUint64))
 	if ps := pad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

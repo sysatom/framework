@@ -18,6 +18,11 @@ func UniqueId() (uint64, error) {
 	return s.NextID()
 }
 
+func Id() uint64 {
+	id, _ := UniqueId()
+	return id
+}
+
 func AppUrl() string {
 	return config.App.URL
 }

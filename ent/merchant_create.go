@@ -139,15 +139,29 @@ func (mc *MerchantCreate) SetNillableCreatedAt(t *time.Time) *MerchantCreate {
 	return mc
 }
 
+// SetID sets the "id" field.
+func (mc *MerchantCreate) SetID(u uint64) *MerchantCreate {
+	mc.mutation.SetID(u)
+	return mc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableID(u *uint64) *MerchantCreate {
+	if u != nil {
+		mc.SetID(*u)
+	}
+	return mc
+}
+
 // AddAccountIDs adds the "accounts" edge to the MerchantAccount entity by IDs.
-func (mc *MerchantCreate) AddAccountIDs(ids ...int) *MerchantCreate {
+func (mc *MerchantCreate) AddAccountIDs(ids ...uint64) *MerchantCreate {
 	mc.mutation.AddAccountIDs(ids...)
 	return mc
 }
 
 // AddAccounts adds the "accounts" edges to the MerchantAccount entity.
 func (mc *MerchantCreate) AddAccounts(m ...*MerchantAccount) *MerchantCreate {
-	ids := make([]int, len(m))
+	ids := make([]uint64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -193,6 +207,10 @@ func (mc *MerchantCreate) defaults() {
 		v := merchant.DefaultCreatedAt()
 		mc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := mc.mutation.ID(); !ok {
+		v := merchant.DefaultID()
+		mc.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -217,8 +235,10 @@ func (mc *MerchantCreate) sqlSave(ctx context.Context) (*Merchant, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = uint64(id)
+	}
 	mc.mutation.id = &_node.ID
 	mc.mutation.done = true
 	return _node, nil
@@ -227,8 +247,12 @@ func (mc *MerchantCreate) sqlSave(ctx context.Context) (*Merchant, error) {
 func (mc *MerchantCreate) createSpec() (*Merchant, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Merchant{config: mc.config}
-		_spec = sqlgraph.NewCreateSpec(merchant.Table, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(merchant.Table, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64))
 	)
+	if id, ok := mc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := mc.mutation.MerchantName(); ok {
 		_spec.SetField(merchant.FieldMerchantName, field.TypeString, value)
 		_node.MerchantName = value
@@ -273,7 +297,7 @@ func (mc *MerchantCreate) createSpec() (*Merchant, *sqlgraph.CreateSpec) {
 			Columns: []string{merchant.AccountsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -329,9 +353,9 @@ func (mcb *MerchantCreateBulk) Save(ctx context.Context) ([]*Merchant, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = uint64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

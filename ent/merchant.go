@@ -16,7 +16,7 @@ import (
 type Merchant struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty"`
 	// MerchantName holds the value of the "merchant_name" field.
 	MerchantName string `json:"merchant_name,omitempty"`
 	// ContactPerson holds the value of the "contact_person" field.
@@ -90,7 +90,7 @@ func (m *Merchant) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			m.ID = int(value.Int64)
+			m.ID = uint64(value.Int64)
 		case merchant.FieldMerchantName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field merchant_name", values[i])

@@ -10,6 +10,7 @@ import (
 	"github.com/sysatom/framework/ent/platformaccount"
 	"github.com/sysatom/framework/ent/schema"
 	"github.com/sysatom/framework/ent/user"
+	"github.com/sysatom/framework/ent/userloginmethod"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -19,37 +20,59 @@ func init() {
 	merchantFields := schema.Merchant{}.Fields()
 	_ = merchantFields
 	// merchantDescCreatedAt is the schema descriptor for created_at field.
-	merchantDescCreatedAt := merchantFields[8].Descriptor()
+	merchantDescCreatedAt := merchantFields[9].Descriptor()
 	// merchant.DefaultCreatedAt holds the default value on creation for the created_at field.
 	merchant.DefaultCreatedAt = merchantDescCreatedAt.Default.(func() time.Time)
+	// merchantDescID is the schema descriptor for id field.
+	merchantDescID := merchantFields[0].Descriptor()
+	// merchant.DefaultID holds the default value on creation for the id field.
+	merchant.DefaultID = merchantDescID.Default.(func() uint64)
 	merchantaccountFields := schema.MerchantAccount{}.Fields()
 	_ = merchantaccountFields
 	// merchantaccountDescEmail is the schema descriptor for email field.
-	merchantaccountDescEmail := merchantaccountFields[2].Descriptor()
+	merchantaccountDescEmail := merchantaccountFields[3].Descriptor()
 	// merchantaccount.DefaultEmail holds the default value on creation for the email field.
 	merchantaccount.DefaultEmail = merchantaccountDescEmail.Default.(string)
 	// merchantaccountDescPhone is the schema descriptor for phone field.
-	merchantaccountDescPhone := merchantaccountFields[3].Descriptor()
+	merchantaccountDescPhone := merchantaccountFields[4].Descriptor()
 	// merchantaccount.DefaultPhone holds the default value on creation for the phone field.
 	merchantaccount.DefaultPhone = merchantaccountDescPhone.Default.(string)
 	// merchantaccountDescIsMainAccount is the schema descriptor for is_main_account field.
-	merchantaccountDescIsMainAccount := merchantaccountFields[4].Descriptor()
+	merchantaccountDescIsMainAccount := merchantaccountFields[5].Descriptor()
 	// merchantaccount.DefaultIsMainAccount holds the default value on creation for the is_main_account field.
 	merchantaccount.DefaultIsMainAccount = merchantaccountDescIsMainAccount.Default.(bool)
+	// merchantaccountDescID is the schema descriptor for id field.
+	merchantaccountDescID := merchantaccountFields[0].Descriptor()
+	// merchantaccount.DefaultID holds the default value on creation for the id field.
+	merchantaccount.DefaultID = merchantaccountDescID.Default.(func() uint64)
 	platformaccountFields := schema.PlatformAccount{}.Fields()
 	_ = platformaccountFields
 	// platformaccountDescEmail is the schema descriptor for email field.
-	platformaccountDescEmail := platformaccountFields[2].Descriptor()
+	platformaccountDescEmail := platformaccountFields[3].Descriptor()
 	// platformaccount.DefaultEmail holds the default value on creation for the email field.
 	platformaccount.DefaultEmail = platformaccountDescEmail.Default.(string)
+	// platformaccountDescID is the schema descriptor for id field.
+	platformaccountDescID := platformaccountFields[0].Descriptor()
+	// platformaccount.DefaultID holds the default value on creation for the id field.
+	platformaccount.DefaultID = platformaccountDescID.Default.(func() uint64)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescPhone is the schema descriptor for phone field.
-	userDescPhone := userFields[1].Descriptor()
+	userDescPhone := userFields[2].Descriptor()
 	// user.DefaultPhone holds the default value on creation for the phone field.
 	user.DefaultPhone = userDescPhone.Default.(string)
 	// userDescEmail is the schema descriptor for email field.
-	userDescEmail := userFields[2].Descriptor()
+	userDescEmail := userFields[3].Descriptor()
 	// user.DefaultEmail holds the default value on creation for the email field.
 	user.DefaultEmail = userDescEmail.Default.(string)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.DefaultID holds the default value on creation for the id field.
+	user.DefaultID = userDescID.Default.(func() uint64)
+	userloginmethodFields := schema.UserLoginMethod{}.Fields()
+	_ = userloginmethodFields
+	// userloginmethodDescID is the schema descriptor for id field.
+	userloginmethodDescID := userloginmethodFields[0].Descriptor()
+	// userloginmethod.DefaultID holds the default value on creation for the id field.
+	userloginmethod.DefaultID = userloginmethodDescID.Default.(func() uint64)
 }

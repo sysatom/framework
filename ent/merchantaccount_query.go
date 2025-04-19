@@ -83,8 +83,8 @@ func (maq *MerchantAccountQuery) FirstX(ctx context.Context) *MerchantAccount {
 
 // FirstID returns the first MerchantAccount ID from the query.
 // Returns a *NotFoundError when no MerchantAccount ID was found.
-func (maq *MerchantAccountQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (maq *MerchantAccountQuery) FirstID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = maq.Limit(1).IDs(setContextOp(ctx, maq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (maq *MerchantAccountQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (maq *MerchantAccountQuery) FirstIDX(ctx context.Context) int {
+func (maq *MerchantAccountQuery) FirstIDX(ctx context.Context) uint64 {
 	id, err := maq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +134,8 @@ func (maq *MerchantAccountQuery) OnlyX(ctx context.Context) *MerchantAccount {
 // OnlyID is like Only, but returns the only MerchantAccount ID in the query.
 // Returns a *NotSingularError when more than one MerchantAccount ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (maq *MerchantAccountQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (maq *MerchantAccountQuery) OnlyID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = maq.Limit(2).IDs(setContextOp(ctx, maq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -151,7 +151,7 @@ func (maq *MerchantAccountQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (maq *MerchantAccountQuery) OnlyIDX(ctx context.Context) int {
+func (maq *MerchantAccountQuery) OnlyIDX(ctx context.Context) uint64 {
 	id, err := maq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -179,7 +179,7 @@ func (maq *MerchantAccountQuery) AllX(ctx context.Context) []*MerchantAccount {
 }
 
 // IDs executes the query and returns a list of MerchantAccount IDs.
-func (maq *MerchantAccountQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (maq *MerchantAccountQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 	if maq.ctx.Unique == nil && maq.path != nil {
 		maq.Unique(true)
 	}
@@ -191,7 +191,7 @@ func (maq *MerchantAccountQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (maq *MerchantAccountQuery) IDsX(ctx context.Context) []int {
+func (maq *MerchantAccountQuery) IDsX(ctx context.Context) []uint64 {
 	ids, err := maq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -370,7 +370,7 @@ func (maq *MerchantAccountQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (maq *MerchantAccountQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(merchantaccount.Table, merchantaccount.Columns, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(merchantaccount.Table, merchantaccount.Columns, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64))
 	_spec.From = maq.sql
 	if unique := maq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

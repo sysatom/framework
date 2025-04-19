@@ -15,7 +15,7 @@ import (
 type PlatformAccount struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -54,7 +54,7 @@ func (pa *PlatformAccount) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			pa.ID = int(value.Int64)
+			pa.ID = uint64(value.Int64)
 		case platformaccount.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])

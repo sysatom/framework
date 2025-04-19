@@ -15,7 +15,7 @@ import (
 type MerchantAccount struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -26,7 +26,7 @@ type MerchantAccount struct {
 	Phone string `json:"phone,omitempty"`
 	// IsMainAccount holds the value of the "is_main_account" field.
 	IsMainAccount     bool `json:"is_main_account,omitempty"`
-	merchant_accounts *int
+	merchant_accounts *uint64
 	selectValues      sql.SelectValues
 }
 
@@ -63,7 +63,7 @@ func (ma *MerchantAccount) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ma.ID = int(value.Int64)
+			ma.ID = uint64(value.Int64)
 		case merchantaccount.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -98,8 +98,8 @@ func (ma *MerchantAccount) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field merchant_accounts", value)
 			} else if value.Valid {
-				ma.merchant_accounts = new(int)
-				*ma.merchant_accounts = int(value.Int64)
+				ma.merchant_accounts = new(uint64)
+				*ma.merchant_accounts = uint64(value.Int64)
 			}
 		default:
 			ma.selectValues.Set(columns[i], values[i])

@@ -8,47 +8,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.UserLoginMethod {
+func ID(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.UserLoginMethod {
+func IDEQ(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.UserLoginMethod {
+func IDNEQ(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.UserLoginMethod {
+func IDIn(ids ...uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.UserLoginMethod {
+func IDNotIn(ids ...uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.UserLoginMethod {
+func IDGT(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.UserLoginMethod {
+func IDGTE(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.UserLoginMethod {
+func IDLT(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.UserLoginMethod {
+func IDLTE(id uint64) predicate.UserLoginMethod {
 	return predicate.UserLoginMethod(sql.FieldLTE(FieldID, id))
 }
 

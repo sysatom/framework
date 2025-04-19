@@ -17,7 +17,7 @@ import (
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty"`
 	// user name
 	Username string `json:"username,omitempty"`
 	// Phone holds the value of the "phone" field.
@@ -27,8 +27,8 @@ type User struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges                 UserEdges `json:"edges"`
-	user_introducer       *int
-	user_default_merchant *int
+	user_introducer       *uint64
+	user_default_merchant *uint64
 	selectValues          sql.SelectValues
 }
 
@@ -109,7 +109,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			u.ID = int(value.Int64)
+			u.ID = uint64(value.Int64)
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -132,15 +132,15 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_introducer", value)
 			} else if value.Valid {
-				u.user_introducer = new(int)
-				*u.user_introducer = int(value.Int64)
+				u.user_introducer = new(uint64)
+				*u.user_introducer = uint64(value.Int64)
 			}
 		case user.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_default_merchant", value)
 			} else if value.Valid {
-				u.user_default_merchant = new(int)
-				*u.user_default_merchant = int(value.Int64)
+				u.user_default_merchant = new(uint64)
+				*u.user_default_merchant = uint64(value.Int64)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])

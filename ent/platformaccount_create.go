@@ -45,6 +45,20 @@ func (pac *PlatformAccountCreate) SetNillableEmail(s *string) *PlatformAccountCr
 	return pac
 }
 
+// SetID sets the "id" field.
+func (pac *PlatformAccountCreate) SetID(u uint64) *PlatformAccountCreate {
+	pac.mutation.SetID(u)
+	return pac
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (pac *PlatformAccountCreate) SetNillableID(u *uint64) *PlatformAccountCreate {
+	if u != nil {
+		pac.SetID(*u)
+	}
+	return pac
+}
+
 // Mutation returns the PlatformAccountMutation object of the builder.
 func (pac *PlatformAccountCreate) Mutation() *PlatformAccountMutation {
 	return pac.mutation
@@ -84,6 +98,10 @@ func (pac *PlatformAccountCreate) defaults() {
 		v := platformaccount.DefaultEmail
 		pac.mutation.SetEmail(v)
 	}
+	if _, ok := pac.mutation.ID(); !ok {
+		v := platformaccount.DefaultID()
+		pac.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -108,8 +126,10 @@ func (pac *PlatformAccountCreate) sqlSave(ctx context.Context) (*PlatformAccount
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = uint64(id)
+	}
 	pac.mutation.id = &_node.ID
 	pac.mutation.done = true
 	return _node, nil
@@ -118,8 +138,12 @@ func (pac *PlatformAccountCreate) sqlSave(ctx context.Context) (*PlatformAccount
 func (pac *PlatformAccountCreate) createSpec() (*PlatformAccount, *sqlgraph.CreateSpec) {
 	var (
 		_node = &PlatformAccount{config: pac.config}
-		_spec = sqlgraph.NewCreateSpec(platformaccount.Table, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(platformaccount.Table, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeUint64))
 	)
+	if id, ok := pac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := pac.mutation.Username(); ok {
 		_spec.SetField(platformaccount.FieldUsername, field.TypeString, value)
 		_node.Username = value
@@ -180,9 +204,9 @@ func (pacb *PlatformAccountCreateBulk) Save(ctx context.Context) ([]*PlatformAcc
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = uint64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

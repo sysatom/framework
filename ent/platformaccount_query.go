@@ -82,8 +82,8 @@ func (paq *PlatformAccountQuery) FirstX(ctx context.Context) *PlatformAccount {
 
 // FirstID returns the first PlatformAccount ID from the query.
 // Returns a *NotFoundError when no PlatformAccount ID was found.
-func (paq *PlatformAccountQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (paq *PlatformAccountQuery) FirstID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = paq.Limit(1).IDs(setContextOp(ctx, paq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -95,7 +95,7 @@ func (paq *PlatformAccountQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (paq *PlatformAccountQuery) FirstIDX(ctx context.Context) int {
+func (paq *PlatformAccountQuery) FirstIDX(ctx context.Context) uint64 {
 	id, err := paq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -133,8 +133,8 @@ func (paq *PlatformAccountQuery) OnlyX(ctx context.Context) *PlatformAccount {
 // OnlyID is like Only, but returns the only PlatformAccount ID in the query.
 // Returns a *NotSingularError when more than one PlatformAccount ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (paq *PlatformAccountQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (paq *PlatformAccountQuery) OnlyID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = paq.Limit(2).IDs(setContextOp(ctx, paq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -150,7 +150,7 @@ func (paq *PlatformAccountQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (paq *PlatformAccountQuery) OnlyIDX(ctx context.Context) int {
+func (paq *PlatformAccountQuery) OnlyIDX(ctx context.Context) uint64 {
 	id, err := paq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,7 +178,7 @@ func (paq *PlatformAccountQuery) AllX(ctx context.Context) []*PlatformAccount {
 }
 
 // IDs executes the query and returns a list of PlatformAccount IDs.
-func (paq *PlatformAccountQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (paq *PlatformAccountQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 	if paq.ctx.Unique == nil && paq.path != nil {
 		paq.Unique(true)
 	}
@@ -190,7 +190,7 @@ func (paq *PlatformAccountQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (paq *PlatformAccountQuery) IDsX(ctx context.Context) []int {
+func (paq *PlatformAccountQuery) IDsX(ctx context.Context) []uint64 {
 	ids, err := paq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -365,7 +365,7 @@ func (paq *PlatformAccountQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (paq *PlatformAccountQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(platformaccount.Table, platformaccount.Columns, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(platformaccount.Table, platformaccount.Columns, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeUint64))
 	_spec.From = paq.sql
 	if unique := paq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

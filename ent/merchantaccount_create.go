@@ -73,6 +73,20 @@ func (mac *MerchantAccountCreate) SetNillableIsMainAccount(b *bool) *MerchantAcc
 	return mac
 }
 
+// SetID sets the "id" field.
+func (mac *MerchantAccountCreate) SetID(u uint64) *MerchantAccountCreate {
+	mac.mutation.SetID(u)
+	return mac
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (mac *MerchantAccountCreate) SetNillableID(u *uint64) *MerchantAccountCreate {
+	if u != nil {
+		mac.SetID(*u)
+	}
+	return mac
+}
+
 // Mutation returns the MerchantAccountMutation object of the builder.
 func (mac *MerchantAccountCreate) Mutation() *MerchantAccountMutation {
 	return mac.mutation
@@ -120,6 +134,10 @@ func (mac *MerchantAccountCreate) defaults() {
 		v := merchantaccount.DefaultIsMainAccount
 		mac.mutation.SetIsMainAccount(v)
 	}
+	if _, ok := mac.mutation.ID(); !ok {
+		v := merchantaccount.DefaultID()
+		mac.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -147,8 +165,10 @@ func (mac *MerchantAccountCreate) sqlSave(ctx context.Context) (*MerchantAccount
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = uint64(id)
+	}
 	mac.mutation.id = &_node.ID
 	mac.mutation.done = true
 	return _node, nil
@@ -157,8 +177,12 @@ func (mac *MerchantAccountCreate) sqlSave(ctx context.Context) (*MerchantAccount
 func (mac *MerchantAccountCreate) createSpec() (*MerchantAccount, *sqlgraph.CreateSpec) {
 	var (
 		_node = &MerchantAccount{config: mac.config}
-		_spec = sqlgraph.NewCreateSpec(merchantaccount.Table, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(merchantaccount.Table, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64))
 	)
+	if id, ok := mac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := mac.mutation.Username(); ok {
 		_spec.SetField(merchantaccount.FieldUsername, field.TypeString, value)
 		_node.Username = value
@@ -227,9 +251,9 @@ func (macb *MerchantAccountCreateBulk) Save(ctx context.Context) ([]*MerchantAcc
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = uint64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

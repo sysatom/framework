@@ -84,14 +84,14 @@ func (uu *UserUpdate) ClearEmail() *UserUpdate {
 }
 
 // AddLoginMethodIDs adds the "login_methods" edge to the UserLoginMethod entity by IDs.
-func (uu *UserUpdate) AddLoginMethodIDs(ids ...int) *UserUpdate {
+func (uu *UserUpdate) AddLoginMethodIDs(ids ...uint64) *UserUpdate {
 	uu.mutation.AddLoginMethodIDs(ids...)
 	return uu
 }
 
 // AddLoginMethods adds the "login_methods" edges to the UserLoginMethod entity.
 func (uu *UserUpdate) AddLoginMethods(u ...*UserLoginMethod) *UserUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uint64, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -99,13 +99,13 @@ func (uu *UserUpdate) AddLoginMethods(u ...*UserLoginMethod) *UserUpdate {
 }
 
 // SetIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID.
-func (uu *UserUpdate) SetIntroducerID(id int) *UserUpdate {
+func (uu *UserUpdate) SetIntroducerID(id uint64) *UserUpdate {
 	uu.mutation.SetIntroducerID(id)
 	return uu
 }
 
 // SetNillableIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID if the given value is not nil.
-func (uu *UserUpdate) SetNillableIntroducerID(id *int) *UserUpdate {
+func (uu *UserUpdate) SetNillableIntroducerID(id *uint64) *UserUpdate {
 	if id != nil {
 		uu = uu.SetIntroducerID(*id)
 	}
@@ -118,13 +118,13 @@ func (uu *UserUpdate) SetIntroducer(u *UserLoginMethod) *UserUpdate {
 }
 
 // SetDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID.
-func (uu *UserUpdate) SetDefaultMerchantID(id int) *UserUpdate {
+func (uu *UserUpdate) SetDefaultMerchantID(id uint64) *UserUpdate {
 	uu.mutation.SetDefaultMerchantID(id)
 	return uu
 }
 
 // SetNillableDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID if the given value is not nil.
-func (uu *UserUpdate) SetNillableDefaultMerchantID(id *int) *UserUpdate {
+func (uu *UserUpdate) SetNillableDefaultMerchantID(id *uint64) *UserUpdate {
 	if id != nil {
 		uu = uu.SetDefaultMerchantID(*id)
 	}
@@ -148,14 +148,14 @@ func (uu *UserUpdate) ClearLoginMethods() *UserUpdate {
 }
 
 // RemoveLoginMethodIDs removes the "login_methods" edge to UserLoginMethod entities by IDs.
-func (uu *UserUpdate) RemoveLoginMethodIDs(ids ...int) *UserUpdate {
+func (uu *UserUpdate) RemoveLoginMethodIDs(ids ...uint64) *UserUpdate {
 	uu.mutation.RemoveLoginMethodIDs(ids...)
 	return uu
 }
 
 // RemoveLoginMethods removes "login_methods" edges to UserLoginMethod entities.
 func (uu *UserUpdate) RemoveLoginMethods(u ...*UserLoginMethod) *UserUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uint64, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -202,7 +202,7 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 }
 
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUint64))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -233,7 +233,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -246,7 +246,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -262,7 +262,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -278,7 +278,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.IntroducerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -291,7 +291,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.IntroducerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -307,7 +307,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.DefaultMerchantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -320,7 +320,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.DefaultMerchantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -403,14 +403,14 @@ func (uuo *UserUpdateOne) ClearEmail() *UserUpdateOne {
 }
 
 // AddLoginMethodIDs adds the "login_methods" edge to the UserLoginMethod entity by IDs.
-func (uuo *UserUpdateOne) AddLoginMethodIDs(ids ...int) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddLoginMethodIDs(ids ...uint64) *UserUpdateOne {
 	uuo.mutation.AddLoginMethodIDs(ids...)
 	return uuo
 }
 
 // AddLoginMethods adds the "login_methods" edges to the UserLoginMethod entity.
 func (uuo *UserUpdateOne) AddLoginMethods(u ...*UserLoginMethod) *UserUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uint64, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -418,13 +418,13 @@ func (uuo *UserUpdateOne) AddLoginMethods(u ...*UserLoginMethod) *UserUpdateOne 
 }
 
 // SetIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID.
-func (uuo *UserUpdateOne) SetIntroducerID(id int) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetIntroducerID(id uint64) *UserUpdateOne {
 	uuo.mutation.SetIntroducerID(id)
 	return uuo
 }
 
 // SetNillableIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableIntroducerID(id *int) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetNillableIntroducerID(id *uint64) *UserUpdateOne {
 	if id != nil {
 		uuo = uuo.SetIntroducerID(*id)
 	}
@@ -437,13 +437,13 @@ func (uuo *UserUpdateOne) SetIntroducer(u *UserLoginMethod) *UserUpdateOne {
 }
 
 // SetDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID.
-func (uuo *UserUpdateOne) SetDefaultMerchantID(id int) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetDefaultMerchantID(id uint64) *UserUpdateOne {
 	uuo.mutation.SetDefaultMerchantID(id)
 	return uuo
 }
 
 // SetNillableDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableDefaultMerchantID(id *int) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetNillableDefaultMerchantID(id *uint64) *UserUpdateOne {
 	if id != nil {
 		uuo = uuo.SetDefaultMerchantID(*id)
 	}
@@ -467,14 +467,14 @@ func (uuo *UserUpdateOne) ClearLoginMethods() *UserUpdateOne {
 }
 
 // RemoveLoginMethodIDs removes the "login_methods" edge to UserLoginMethod entities by IDs.
-func (uuo *UserUpdateOne) RemoveLoginMethodIDs(ids ...int) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveLoginMethodIDs(ids ...uint64) *UserUpdateOne {
 	uuo.mutation.RemoveLoginMethodIDs(ids...)
 	return uuo
 }
 
 // RemoveLoginMethods removes "login_methods" edges to UserLoginMethod entities.
 func (uuo *UserUpdateOne) RemoveLoginMethods(u ...*UserLoginMethod) *UserUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uint64, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -534,7 +534,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUint64))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -582,7 +582,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -595,7 +595,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -611,7 +611,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -627,7 +627,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.IntroducerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -640,7 +640,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.IntroducerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -656,7 +656,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.DefaultMerchantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -669,7 +669,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.DefaultMerchantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

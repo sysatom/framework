@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/sysatom/framework/pkg/types"
 )
 
 // PlatformAccount holds the schema definition for the PlatformAccount entity.
@@ -13,6 +14,7 @@ type PlatformAccount struct {
 // Fields of the PlatformAccount.
 func (PlatformAccount) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("id").DefaultFunc(types.Id),
 		field.String("username").
 			Unique(),
 		field.String("password"),

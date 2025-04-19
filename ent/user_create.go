@@ -55,15 +55,29 @@ func (uc *UserCreate) SetNillableEmail(s *string) *UserCreate {
 	return uc
 }
 
+// SetID sets the "id" field.
+func (uc *UserCreate) SetID(u uint64) *UserCreate {
+	uc.mutation.SetID(u)
+	return uc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableID(u *uint64) *UserCreate {
+	if u != nil {
+		uc.SetID(*u)
+	}
+	return uc
+}
+
 // AddLoginMethodIDs adds the "login_methods" edge to the UserLoginMethod entity by IDs.
-func (uc *UserCreate) AddLoginMethodIDs(ids ...int) *UserCreate {
+func (uc *UserCreate) AddLoginMethodIDs(ids ...uint64) *UserCreate {
 	uc.mutation.AddLoginMethodIDs(ids...)
 	return uc
 }
 
 // AddLoginMethods adds the "login_methods" edges to the UserLoginMethod entity.
 func (uc *UserCreate) AddLoginMethods(u ...*UserLoginMethod) *UserCreate {
-	ids := make([]int, len(u))
+	ids := make([]uint64, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -71,13 +85,13 @@ func (uc *UserCreate) AddLoginMethods(u ...*UserLoginMethod) *UserCreate {
 }
 
 // SetIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID.
-func (uc *UserCreate) SetIntroducerID(id int) *UserCreate {
+func (uc *UserCreate) SetIntroducerID(id uint64) *UserCreate {
 	uc.mutation.SetIntroducerID(id)
 	return uc
 }
 
 // SetNillableIntroducerID sets the "introducer" edge to the UserLoginMethod entity by ID if the given value is not nil.
-func (uc *UserCreate) SetNillableIntroducerID(id *int) *UserCreate {
+func (uc *UserCreate) SetNillableIntroducerID(id *uint64) *UserCreate {
 	if id != nil {
 		uc = uc.SetIntroducerID(*id)
 	}
@@ -90,13 +104,13 @@ func (uc *UserCreate) SetIntroducer(u *UserLoginMethod) *UserCreate {
 }
 
 // SetDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID.
-func (uc *UserCreate) SetDefaultMerchantID(id int) *UserCreate {
+func (uc *UserCreate) SetDefaultMerchantID(id uint64) *UserCreate {
 	uc.mutation.SetDefaultMerchantID(id)
 	return uc
 }
 
 // SetNillableDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by ID if the given value is not nil.
-func (uc *UserCreate) SetNillableDefaultMerchantID(id *int) *UserCreate {
+func (uc *UserCreate) SetNillableDefaultMerchantID(id *uint64) *UserCreate {
 	if id != nil {
 		uc = uc.SetDefaultMerchantID(*id)
 	}
@@ -151,6 +165,10 @@ func (uc *UserCreate) defaults() {
 		v := user.DefaultEmail
 		uc.mutation.SetEmail(v)
 	}
+	if _, ok := uc.mutation.ID(); !ok {
+		v := user.DefaultID()
+		uc.mutation.SetID(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -172,8 +190,10 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = uint64(id)
+	}
 	uc.mutation.id = &_node.ID
 	uc.mutation.done = true
 	return _node, nil
@@ -182,8 +202,12 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	var (
 		_node = &User{config: uc.config}
-		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUint64))
 	)
+	if id, ok := uc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 		_node.Username = value
@@ -204,7 +228,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Columns: []string{user.LoginMethodsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -220,7 +244,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Columns: []string{user.IntroducerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -237,7 +261,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Columns: []string{user.DefaultMerchantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -294,9 +318,9 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = uint64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/sysatom/framework/pkg/types"
 )
 
 // MerchantAccount holds the schema definition for the MerchantAccount entity.
@@ -13,6 +14,7 @@ type MerchantAccount struct {
 // Fields of the MerchantAccount.
 func (MerchantAccount) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("id").DefaultFunc(types.Id),
 		//field.Int64("merchant_id"),
 		field.String("username").Unique(),
 		field.String("password"),

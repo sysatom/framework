@@ -84,6 +84,8 @@ var (
 	DefaultPhone string
 	// DefaultEmail holds the default value on creation for the "email" field.
 	DefaultEmail string
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uint64
 )
 
 // OrderOption defines the ordering options for the User queries.

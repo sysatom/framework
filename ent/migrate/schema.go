@@ -10,7 +10,7 @@ import (
 var (
 	// MerchantsColumns holds the columns for the "merchants" table.
 	MerchantsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "merchant_name", Type: field.TypeString},
 		{Name: "contact_person", Type: field.TypeString, Nullable: true},
 		{Name: "contact_phone", Type: field.TypeString, Nullable: true},
@@ -29,13 +29,13 @@ var (
 	}
 	// MerchantAccountsColumns holds the columns for the "merchant_accounts" table.
 	MerchantAccountsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "phone", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "is_main_account", Type: field.TypeBool, Default: false},
-		{Name: "merchant_accounts", Type: field.TypeInt, Nullable: true},
+		{Name: "merchant_accounts", Type: field.TypeUint64, Nullable: true},
 	}
 	// MerchantAccountsTable holds the schema information for the "merchant_accounts" table.
 	MerchantAccountsTable = &schema.Table{
@@ -53,7 +53,7 @@ var (
 	}
 	// PlatformAccountsColumns holds the columns for the "platform_accounts" table.
 	PlatformAccountsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
@@ -66,12 +66,12 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "username", Type: field.TypeString},
 		{Name: "phone", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "user_introducer", Type: field.TypeInt, Nullable: true},
-		{Name: "user_default_merchant", Type: field.TypeInt, Nullable: true},
+		{Name: "user_introducer", Type: field.TypeUint64, Nullable: true},
+		{Name: "user_default_merchant", Type: field.TypeUint64, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -95,10 +95,10 @@ var (
 	}
 	// UserLoginMethodsColumns holds the columns for the "user_login_methods" table.
 	UserLoginMethodsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "login_type", Type: field.TypeString},
 		{Name: "identifier", Type: field.TypeString},
-		{Name: "user_login_methods", Type: field.TypeInt, Nullable: true},
+		{Name: "user_login_methods", Type: field.TypeUint64, Nullable: true},
 	}
 	// UserLoginMethodsTable holds the schema information for the "user_login_methods" table.
 	UserLoginMethodsTable = &schema.Table{

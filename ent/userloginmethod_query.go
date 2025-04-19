@@ -83,8 +83,8 @@ func (ulmq *UserLoginMethodQuery) FirstX(ctx context.Context) *UserLoginMethod {
 
 // FirstID returns the first UserLoginMethod ID from the query.
 // Returns a *NotFoundError when no UserLoginMethod ID was found.
-func (ulmq *UserLoginMethodQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ulmq *UserLoginMethodQuery) FirstID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = ulmq.Limit(1).IDs(setContextOp(ctx, ulmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (ulmq *UserLoginMethodQuery) FirstID(ctx context.Context) (id int, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ulmq *UserLoginMethodQuery) FirstIDX(ctx context.Context) int {
+func (ulmq *UserLoginMethodQuery) FirstIDX(ctx context.Context) uint64 {
 	id, err := ulmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +134,8 @@ func (ulmq *UserLoginMethodQuery) OnlyX(ctx context.Context) *UserLoginMethod {
 // OnlyID is like Only, but returns the only UserLoginMethod ID in the query.
 // Returns a *NotSingularError when more than one UserLoginMethod ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ulmq *UserLoginMethodQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ulmq *UserLoginMethodQuery) OnlyID(ctx context.Context) (id uint64, err error) {
+	var ids []uint64
 	if ids, err = ulmq.Limit(2).IDs(setContextOp(ctx, ulmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -151,7 +151,7 @@ func (ulmq *UserLoginMethodQuery) OnlyID(ctx context.Context) (id int, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ulmq *UserLoginMethodQuery) OnlyIDX(ctx context.Context) int {
+func (ulmq *UserLoginMethodQuery) OnlyIDX(ctx context.Context) uint64 {
 	id, err := ulmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -179,7 +179,7 @@ func (ulmq *UserLoginMethodQuery) AllX(ctx context.Context) []*UserLoginMethod {
 }
 
 // IDs executes the query and returns a list of UserLoginMethod IDs.
-func (ulmq *UserLoginMethodQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (ulmq *UserLoginMethodQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 	if ulmq.ctx.Unique == nil && ulmq.path != nil {
 		ulmq.Unique(true)
 	}
@@ -191,7 +191,7 @@ func (ulmq *UserLoginMethodQuery) IDs(ctx context.Context) (ids []int, err error
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ulmq *UserLoginMethodQuery) IDsX(ctx context.Context) []int {
+func (ulmq *UserLoginMethodQuery) IDsX(ctx context.Context) []uint64 {
 	ids, err := ulmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -370,7 +370,7 @@ func (ulmq *UserLoginMethodQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (ulmq *UserLoginMethodQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	_spec.From = ulmq.sql
 	if unique := ulmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -40,7 +40,7 @@ func (mad *MerchantAccountDelete) ExecX(ctx context.Context) int {
 }
 
 func (mad *MerchantAccountDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(merchantaccount.Table, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(merchantaccount.Table, sqlgraph.NewFieldSpec(merchantaccount.FieldID, field.TypeUint64))
 	if ps := mad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

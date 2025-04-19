@@ -15,12 +15,12 @@ import (
 type UserLoginMethod struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty"`
 	// LoginType holds the value of the "login_type" field.
 	LoginType string `json:"login_type,omitempty"`
 	// Identifier holds the value of the "identifier" field.
 	Identifier         string `json:"identifier,omitempty"`
-	user_login_methods *int
+	user_login_methods *uint64
 	selectValues       sql.SelectValues
 }
 
@@ -55,7 +55,7 @@ func (ulm *UserLoginMethod) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ulm.ID = int(value.Int64)
+			ulm.ID = uint64(value.Int64)
 		case userloginmethod.FieldLoginType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field login_type", values[i])
@@ -72,8 +72,8 @@ func (ulm *UserLoginMethod) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_login_methods", value)
 			} else if value.Valid {
-				ulm.user_login_methods = new(int)
-				*ulm.user_login_methods = int(value.Int64)
+				ulm.user_login_methods = new(uint64)
+				*ulm.user_login_methods = uint64(value.Int64)
 			}
 		default:
 			ulm.selectValues.Set(columns[i], values[i])

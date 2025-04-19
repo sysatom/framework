@@ -40,7 +40,7 @@ type MerchantMutation struct {
 	config
 	op              Op
 	typ             string
-	id              *int
+	id              *uint64
 	merchant_name   *string
 	contact_person  *string
 	contact_phone   *string
@@ -51,8 +51,8 @@ type MerchantMutation struct {
 	address         *string
 	created_at      *time.Time
 	clearedFields   map[string]struct{}
-	accounts        map[int]struct{}
-	removedaccounts map[int]struct{}
+	accounts        map[uint64]struct{}
+	removedaccounts map[uint64]struct{}
 	clearedaccounts bool
 	done            bool
 	oldValue        func(context.Context) (*Merchant, error)
@@ -79,7 +79,7 @@ func newMerchantMutation(c config, op Op, opts ...merchantOption) *MerchantMutat
 }
 
 // withMerchantID sets the ID field of the mutation.
-func withMerchantID(id int) merchantOption {
+func withMerchantID(id uint64) merchantOption {
 	return func(m *MerchantMutation) {
 		var (
 			err   error
@@ -129,9 +129,15 @@ func (m MerchantMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Merchant entities.
+func (m *MerchantMutation) SetID(id uint64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MerchantMutation) ID() (id int, exists bool) {
+func (m *MerchantMutation) ID() (id uint64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -142,12 +148,12 @@ func (m *MerchantMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MerchantMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *MerchantMutation) IDs(ctx context.Context) ([]uint64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []uint64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -573,9 +579,9 @@ func (m *MerchantMutation) ResetCreatedAt() {
 }
 
 // AddAccountIDs adds the "accounts" edge to the MerchantAccount entity by ids.
-func (m *MerchantMutation) AddAccountIDs(ids ...int) {
+func (m *MerchantMutation) AddAccountIDs(ids ...uint64) {
 	if m.accounts == nil {
-		m.accounts = make(map[int]struct{})
+		m.accounts = make(map[uint64]struct{})
 	}
 	for i := range ids {
 		m.accounts[ids[i]] = struct{}{}
@@ -593,9 +599,9 @@ func (m *MerchantMutation) AccountsCleared() bool {
 }
 
 // RemoveAccountIDs removes the "accounts" edge to the MerchantAccount entity by IDs.
-func (m *MerchantMutation) RemoveAccountIDs(ids ...int) {
+func (m *MerchantMutation) RemoveAccountIDs(ids ...uint64) {
 	if m.removedaccounts == nil {
-		m.removedaccounts = make(map[int]struct{})
+		m.removedaccounts = make(map[uint64]struct{})
 	}
 	for i := range ids {
 		delete(m.accounts, ids[i])
@@ -604,7 +610,7 @@ func (m *MerchantMutation) RemoveAccountIDs(ids ...int) {
 }
 
 // RemovedAccounts returns the removed IDs of the "accounts" edge to the MerchantAccount entity.
-func (m *MerchantMutation) RemovedAccountsIDs() (ids []int) {
+func (m *MerchantMutation) RemovedAccountsIDs() (ids []uint64) {
 	for id := range m.removedaccounts {
 		ids = append(ids, id)
 	}
@@ -612,7 +618,7 @@ func (m *MerchantMutation) RemovedAccountsIDs() (ids []int) {
 }
 
 // AccountsIDs returns the "accounts" edge IDs in the mutation.
-func (m *MerchantMutation) AccountsIDs() (ids []int) {
+func (m *MerchantMutation) AccountsIDs() (ids []uint64) {
 	for id := range m.accounts {
 		ids = append(ids, id)
 	}
@@ -1027,7 +1033,7 @@ type MerchantAccountMutation struct {
 	config
 	op              Op
 	typ             string
-	id              *int
+	id              *uint64
 	username        *string
 	password        *string
 	email           *string
@@ -1059,7 +1065,7 @@ func newMerchantAccountMutation(c config, op Op, opts ...merchantaccountOption) 
 }
 
 // withMerchantAccountID sets the ID field of the mutation.
-func withMerchantAccountID(id int) merchantaccountOption {
+func withMerchantAccountID(id uint64) merchantaccountOption {
 	return func(m *MerchantAccountMutation) {
 		var (
 			err   error
@@ -1109,9 +1115,15 @@ func (m MerchantAccountMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MerchantAccount entities.
+func (m *MerchantAccountMutation) SetID(id uint64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MerchantAccountMutation) ID() (id int, exists bool) {
+func (m *MerchantAccountMutation) ID() (id uint64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1122,12 +1134,12 @@ func (m *MerchantAccountMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MerchantAccountMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *MerchantAccountMutation) IDs(ctx context.Context) ([]uint64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []uint64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -1610,7 +1622,7 @@ type PlatformAccountMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *uint64
 	username      *string
 	password      *string
 	email         *string
@@ -1640,7 +1652,7 @@ func newPlatformAccountMutation(c config, op Op, opts ...platformaccountOption) 
 }
 
 // withPlatformAccountID sets the ID field of the mutation.
-func withPlatformAccountID(id int) platformaccountOption {
+func withPlatformAccountID(id uint64) platformaccountOption {
 	return func(m *PlatformAccountMutation) {
 		var (
 			err   error
@@ -1690,9 +1702,15 @@ func (m PlatformAccountMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PlatformAccount entities.
+func (m *PlatformAccountMutation) SetID(id uint64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *PlatformAccountMutation) ID() (id int, exists bool) {
+func (m *PlatformAccountMutation) ID() (id uint64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1703,12 +1721,12 @@ func (m *PlatformAccountMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *PlatformAccountMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *PlatformAccountMutation) IDs(ctx context.Context) ([]uint64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []uint64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2066,17 +2084,17 @@ type UserMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *uint64
 	username                *string
 	phone                   *string
 	email                   *string
 	clearedFields           map[string]struct{}
-	login_methods           map[int]struct{}
-	removedlogin_methods    map[int]struct{}
+	login_methods           map[uint64]struct{}
+	removedlogin_methods    map[uint64]struct{}
 	clearedlogin_methods    bool
-	introducer              *int
+	introducer              *uint64
 	clearedintroducer       bool
-	default_merchant        *int
+	default_merchant        *uint64
 	cleareddefault_merchant bool
 	done                    bool
 	oldValue                func(context.Context) (*User, error)
@@ -2103,7 +2121,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 }
 
 // withUserID sets the ID field of the mutation.
-func withUserID(id int) userOption {
+func withUserID(id uint64) userOption {
 	return func(m *UserMutation) {
 		var (
 			err   error
@@ -2153,9 +2171,15 @@ func (m UserMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of User entities.
+func (m *UserMutation) SetID(id uint64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id int, exists bool) {
+func (m *UserMutation) ID() (id uint64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2166,12 +2190,12 @@ func (m *UserMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UserMutation) IDs(ctx context.Context) ([]uint64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []uint64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2316,9 +2340,9 @@ func (m *UserMutation) ResetEmail() {
 }
 
 // AddLoginMethodIDs adds the "login_methods" edge to the UserLoginMethod entity by ids.
-func (m *UserMutation) AddLoginMethodIDs(ids ...int) {
+func (m *UserMutation) AddLoginMethodIDs(ids ...uint64) {
 	if m.login_methods == nil {
-		m.login_methods = make(map[int]struct{})
+		m.login_methods = make(map[uint64]struct{})
 	}
 	for i := range ids {
 		m.login_methods[ids[i]] = struct{}{}
@@ -2336,9 +2360,9 @@ func (m *UserMutation) LoginMethodsCleared() bool {
 }
 
 // RemoveLoginMethodIDs removes the "login_methods" edge to the UserLoginMethod entity by IDs.
-func (m *UserMutation) RemoveLoginMethodIDs(ids ...int) {
+func (m *UserMutation) RemoveLoginMethodIDs(ids ...uint64) {
 	if m.removedlogin_methods == nil {
-		m.removedlogin_methods = make(map[int]struct{})
+		m.removedlogin_methods = make(map[uint64]struct{})
 	}
 	for i := range ids {
 		delete(m.login_methods, ids[i])
@@ -2347,7 +2371,7 @@ func (m *UserMutation) RemoveLoginMethodIDs(ids ...int) {
 }
 
 // RemovedLoginMethods returns the removed IDs of the "login_methods" edge to the UserLoginMethod entity.
-func (m *UserMutation) RemovedLoginMethodsIDs() (ids []int) {
+func (m *UserMutation) RemovedLoginMethodsIDs() (ids []uint64) {
 	for id := range m.removedlogin_methods {
 		ids = append(ids, id)
 	}
@@ -2355,7 +2379,7 @@ func (m *UserMutation) RemovedLoginMethodsIDs() (ids []int) {
 }
 
 // LoginMethodsIDs returns the "login_methods" edge IDs in the mutation.
-func (m *UserMutation) LoginMethodsIDs() (ids []int) {
+func (m *UserMutation) LoginMethodsIDs() (ids []uint64) {
 	for id := range m.login_methods {
 		ids = append(ids, id)
 	}
@@ -2370,7 +2394,7 @@ func (m *UserMutation) ResetLoginMethods() {
 }
 
 // SetIntroducerID sets the "introducer" edge to the UserLoginMethod entity by id.
-func (m *UserMutation) SetIntroducerID(id int) {
+func (m *UserMutation) SetIntroducerID(id uint64) {
 	m.introducer = &id
 }
 
@@ -2385,7 +2409,7 @@ func (m *UserMutation) IntroducerCleared() bool {
 }
 
 // IntroducerID returns the "introducer" edge ID in the mutation.
-func (m *UserMutation) IntroducerID() (id int, exists bool) {
+func (m *UserMutation) IntroducerID() (id uint64, exists bool) {
 	if m.introducer != nil {
 		return *m.introducer, true
 	}
@@ -2395,7 +2419,7 @@ func (m *UserMutation) IntroducerID() (id int, exists bool) {
 // IntroducerIDs returns the "introducer" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // IntroducerID instead. It exists only for internal usage by the builders.
-func (m *UserMutation) IntroducerIDs() (ids []int) {
+func (m *UserMutation) IntroducerIDs() (ids []uint64) {
 	if id := m.introducer; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2409,7 +2433,7 @@ func (m *UserMutation) ResetIntroducer() {
 }
 
 // SetDefaultMerchantID sets the "default_merchant" edge to the Merchant entity by id.
-func (m *UserMutation) SetDefaultMerchantID(id int) {
+func (m *UserMutation) SetDefaultMerchantID(id uint64) {
 	m.default_merchant = &id
 }
 
@@ -2424,7 +2448,7 @@ func (m *UserMutation) DefaultMerchantCleared() bool {
 }
 
 // DefaultMerchantID returns the "default_merchant" edge ID in the mutation.
-func (m *UserMutation) DefaultMerchantID() (id int, exists bool) {
+func (m *UserMutation) DefaultMerchantID() (id uint64, exists bool) {
 	if m.default_merchant != nil {
 		return *m.default_merchant, true
 	}
@@ -2434,7 +2458,7 @@ func (m *UserMutation) DefaultMerchantID() (id int, exists bool) {
 // DefaultMerchantIDs returns the "default_merchant" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // DefaultMerchantID instead. It exists only for internal usage by the builders.
-func (m *UserMutation) DefaultMerchantIDs() (ids []int) {
+func (m *UserMutation) DefaultMerchantIDs() (ids []uint64) {
 	if id := m.default_merchant; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2752,7 +2776,7 @@ type UserLoginMethodMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *uint64
 	login_type    *string
 	identifier    *string
 	clearedFields map[string]struct{}
@@ -2781,7 +2805,7 @@ func newUserLoginMethodMutation(c config, op Op, opts ...userloginmethodOption) 
 }
 
 // withUserLoginMethodID sets the ID field of the mutation.
-func withUserLoginMethodID(id int) userloginmethodOption {
+func withUserLoginMethodID(id uint64) userloginmethodOption {
 	return func(m *UserLoginMethodMutation) {
 		var (
 			err   error
@@ -2831,9 +2855,15 @@ func (m UserLoginMethodMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of UserLoginMethod entities.
+func (m *UserLoginMethodMutation) SetID(id uint64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserLoginMethodMutation) ID() (id int, exists bool) {
+func (m *UserLoginMethodMutation) ID() (id uint64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2844,12 +2874,12 @@ func (m *UserLoginMethodMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserLoginMethodMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UserLoginMethodMutation) IDs(ctx context.Context) ([]uint64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []uint64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

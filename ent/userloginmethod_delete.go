@@ -40,7 +40,7 @@ func (ulmd *UserLoginMethodDelete) ExecX(ctx context.Context) int {
 }
 
 func (ulmd *UserLoginMethodDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(userloginmethod.Table, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(userloginmethod.Table, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	if ps := ulmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

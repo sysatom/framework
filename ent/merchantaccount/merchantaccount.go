@@ -63,6 +63,8 @@ var (
 	DefaultPhone string
 	// DefaultIsMainAccount holds the default value on creation for the "is_main_account" field.
 	DefaultIsMainAccount bool
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uint64
 )
 
 // OrderOption defines the ordering options for the MerchantAccount queries.

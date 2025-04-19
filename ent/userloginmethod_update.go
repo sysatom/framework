@@ -88,7 +88,7 @@ func (ulmu *UserLoginMethodUpdate) ExecX(ctx context.Context) {
 }
 
 func (ulmu *UserLoginMethodUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	if ps := ulmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -196,7 +196,7 @@ func (ulmuo *UserLoginMethodUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (ulmuo *UserLoginMethodUpdateOne) sqlSave(ctx context.Context) (_node *UserLoginMethod, err error) {
-	_spec := sqlgraph.NewUpdateSpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	id, ok := ulmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "UserLoginMethod.id" for update`)}
