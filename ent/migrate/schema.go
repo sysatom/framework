@@ -8,12 +8,54 @@ import (
 )
 
 var (
+	// MerchantsColumns holds the columns for the "merchants" table.
+	MerchantsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "merchant_name", Type: field.TypeString},
+		{Name: "contact_person", Type: field.TypeString},
+		{Name: "contact_phone", Type: field.TypeString},
+		{Name: "country", Type: field.TypeString},
+		{Name: "province", Type: field.TypeString},
+		{Name: "city", Type: field.TypeString},
+		{Name: "district", Type: field.TypeString},
+		{Name: "address", Type: field.TypeString},
+	}
+	// MerchantsTable holds the schema information for the "merchants" table.
+	MerchantsTable = &schema.Table{
+		Name:       "merchants",
+		Columns:    MerchantsColumns,
+		PrimaryKey: []*schema.Column{MerchantsColumns[0]},
+	}
+	// MerchantAccountsColumns holds the columns for the "merchant_accounts" table.
+	MerchantAccountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "username", Type: field.TypeString, Unique: true},
+		{Name: "password", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "phone", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "is_main_account", Type: field.TypeBool, Default: false},
+		{Name: "merchant_accounts", Type: field.TypeInt, Nullable: true},
+	}
+	// MerchantAccountsTable holds the schema information for the "merchant_accounts" table.
+	MerchantAccountsTable = &schema.Table{
+		Name:       "merchant_accounts",
+		Columns:    MerchantAccountsColumns,
+		PrimaryKey: []*schema.Column{MerchantAccountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "merchant_accounts_merchants_accounts",
+				Columns:    []*schema.Column{MerchantAccountsColumns[6]},
+				RefColumns: []*schema.Column{MerchantsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// PlatformAccountsColumns holds the columns for the "platform_accounts" table.
 	PlatformAccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
-		{Name: "email", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// PlatformAccountsTable holds the schema information for the "platform_accounts" table.
 	PlatformAccountsTable = &schema.Table{
@@ -21,11 +63,69 @@ var (
 		Columns:    PlatformAccountsColumns,
 		PrimaryKey: []*schema.Column{PlatformAccountsColumns[0]},
 	}
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "username", Type: field.TypeString},
+		{Name: "phone", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "user_introducer", Type: field.TypeInt, Nullable: true},
+		{Name: "user_default_merchant", Type: field.TypeInt, Nullable: true},
+	}
+	// UsersTable holds the schema information for the "users" table.
+	UsersTable = &schema.Table{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "users_user_login_methods_introducer",
+				Columns:    []*schema.Column{UsersColumns[4]},
+				RefColumns: []*schema.Column{UserLoginMethodsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "users_merchants_default_merchant",
+				Columns:    []*schema.Column{UsersColumns[5]},
+				RefColumns: []*schema.Column{MerchantsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// UserLoginMethodsColumns holds the columns for the "user_login_methods" table.
+	UserLoginMethodsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "login_type", Type: field.TypeString},
+		{Name: "identifier", Type: field.TypeString},
+		{Name: "user_login_methods", Type: field.TypeInt, Nullable: true},
+	}
+	// UserLoginMethodsTable holds the schema information for the "user_login_methods" table.
+	UserLoginMethodsTable = &schema.Table{
+		Name:       "user_login_methods",
+		Columns:    UserLoginMethodsColumns,
+		PrimaryKey: []*schema.Column{UserLoginMethodsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_login_methods_users_login_methods",
+				Columns:    []*schema.Column{UserLoginMethodsColumns[3]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		MerchantsTable,
+		MerchantAccountsTable,
 		PlatformAccountsTable,
+		UsersTable,
+		UserLoginMethodsTable,
 	}
 )
 
 func init() {
+	MerchantAccountsTable.ForeignKeys[0].RefTable = MerchantsTable
+	UsersTable.ForeignKeys[0].RefTable = UserLoginMethodsTable
+	UsersTable.ForeignKeys[1].RefTable = MerchantsTable
+	UserLoginMethodsTable.ForeignKeys[0].RefTable = UsersTable
 }

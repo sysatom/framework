@@ -69,6 +69,12 @@ func (pau *PlatformAccountUpdate) SetNillableEmail(s *string) *PlatformAccountUp
 	return pau
 }
 
+// ClearEmail clears the value of the "email" field.
+func (pau *PlatformAccountUpdate) ClearEmail() *PlatformAccountUpdate {
+	pau.mutation.ClearEmail()
+	return pau
+}
+
 // Mutation returns the PlatformAccountMutation object of the builder.
 func (pau *PlatformAccountUpdate) Mutation() *PlatformAccountMutation {
 	return pau.mutation
@@ -118,6 +124,9 @@ func (pau *PlatformAccountUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := pau.mutation.Email(); ok {
 		_spec.SetField(platformaccount.FieldEmail, field.TypeString, value)
+	}
+	if pau.mutation.EmailCleared() {
+		_spec.ClearField(platformaccount.FieldEmail, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pau.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -178,6 +187,12 @@ func (pauo *PlatformAccountUpdateOne) SetNillableEmail(s *string) *PlatformAccou
 	if s != nil {
 		pauo.SetEmail(*s)
 	}
+	return pauo
+}
+
+// ClearEmail clears the value of the "email" field.
+func (pauo *PlatformAccountUpdateOne) ClearEmail() *PlatformAccountUpdateOne {
+	pauo.mutation.ClearEmail()
 	return pauo
 }
 
@@ -260,6 +275,9 @@ func (pauo *PlatformAccountUpdateOne) sqlSave(ctx context.Context) (_node *Platf
 	}
 	if value, ok := pauo.mutation.Email(); ok {
 		_spec.SetField(platformaccount.FieldEmail, field.TypeString, value)
+	}
+	if pauo.mutation.EmailCleared() {
+		_spec.ClearField(platformaccount.FieldEmail, field.TypeString)
 	}
 	_node = &PlatformAccount{config: pauo.config}
 	_spec.Assign = _node.assignValues

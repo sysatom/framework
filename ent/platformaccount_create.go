@@ -37,6 +37,14 @@ func (pac *PlatformAccountCreate) SetEmail(s string) *PlatformAccountCreate {
 	return pac
 }
 
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (pac *PlatformAccountCreate) SetNillableEmail(s *string) *PlatformAccountCreate {
+	if s != nil {
+		pac.SetEmail(*s)
+	}
+	return pac
+}
+
 // Mutation returns the PlatformAccountMutation object of the builder.
 func (pac *PlatformAccountCreate) Mutation() *PlatformAccountMutation {
 	return pac.mutation
@@ -44,6 +52,7 @@ func (pac *PlatformAccountCreate) Mutation() *PlatformAccountMutation {
 
 // Save creates the PlatformAccount in the database.
 func (pac *PlatformAccountCreate) Save(ctx context.Context) (*PlatformAccount, error) {
+	pac.defaults()
 	return withHooks(ctx, pac.sqlSave, pac.mutation, pac.hooks)
 }
 
@@ -69,6 +78,14 @@ func (pac *PlatformAccountCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pac *PlatformAccountCreate) defaults() {
+	if _, ok := pac.mutation.Email(); !ok {
+		v := platformaccount.DefaultEmail
+		pac.mutation.SetEmail(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pac *PlatformAccountCreate) check() error {
 	if _, ok := pac.mutation.Username(); !ok {
@@ -76,9 +93,6 @@ func (pac *PlatformAccountCreate) check() error {
 	}
 	if _, ok := pac.mutation.Password(); !ok {
 		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "PlatformAccount.password"`)}
-	}
-	if _, ok := pac.mutation.Email(); !ok {
-		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "PlatformAccount.email"`)}
 	}
 	return nil
 }
@@ -139,6 +153,7 @@ func (pacb *PlatformAccountCreateBulk) Save(ctx context.Context) ([]*PlatformAcc
 	for i := range pacb.builders {
 		func(i int, root context.Context) {
 			builder := pacb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PlatformAccountMutation)
 				if !ok {

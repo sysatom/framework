@@ -2,8 +2,45 @@
 
 package ent
 
+import (
+	"github.com/sysatom/framework/ent/merchantaccount"
+	"github.com/sysatom/framework/ent/platformaccount"
+	"github.com/sysatom/framework/ent/schema"
+	"github.com/sysatom/framework/ent/user"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	merchantaccountFields := schema.MerchantAccount{}.Fields()
+	_ = merchantaccountFields
+	// merchantaccountDescEmail is the schema descriptor for email field.
+	merchantaccountDescEmail := merchantaccountFields[2].Descriptor()
+	// merchantaccount.DefaultEmail holds the default value on creation for the email field.
+	merchantaccount.DefaultEmail = merchantaccountDescEmail.Default.(string)
+	// merchantaccountDescPhone is the schema descriptor for phone field.
+	merchantaccountDescPhone := merchantaccountFields[3].Descriptor()
+	// merchantaccount.DefaultPhone holds the default value on creation for the phone field.
+	merchantaccount.DefaultPhone = merchantaccountDescPhone.Default.(string)
+	// merchantaccountDescIsMainAccount is the schema descriptor for is_main_account field.
+	merchantaccountDescIsMainAccount := merchantaccountFields[4].Descriptor()
+	// merchantaccount.DefaultIsMainAccount holds the default value on creation for the is_main_account field.
+	merchantaccount.DefaultIsMainAccount = merchantaccountDescIsMainAccount.Default.(bool)
+	platformaccountFields := schema.PlatformAccount{}.Fields()
+	_ = platformaccountFields
+	// platformaccountDescEmail is the schema descriptor for email field.
+	platformaccountDescEmail := platformaccountFields[2].Descriptor()
+	// platformaccount.DefaultEmail holds the default value on creation for the email field.
+	platformaccount.DefaultEmail = platformaccountDescEmail.Default.(string)
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescPhone is the schema descriptor for phone field.
+	userDescPhone := userFields[1].Descriptor()
+	// user.DefaultPhone holds the default value on creation for the phone field.
+	user.DefaultPhone = userDescPhone.Default.(string)
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[2].Descriptor()
+	// user.DefaultEmail holds the default value on creation for the email field.
+	user.DefaultEmail = userDescEmail.Default.(string)
 }

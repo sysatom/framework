@@ -5,7 +5,7 @@ import (
 	"entgo.io/ent/dialect/sql/schema"
 	"errors"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // revive:ignore
 	"github.com/redis/go-redis/v9"
 	"github.com/sysatom/framework/ent"
 	"github.com/sysatom/framework/pkg/config"
@@ -18,6 +18,7 @@ func NewMySQLClient(lc fx.Lifecycle, _ config.Type) (*ent.Client, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed opening connection to mysql: %w", err)
 	}
+	client = client.Debug()
 
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {

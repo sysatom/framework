@@ -6,5 +6,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Merchant is the predicate function for merchant builders.
+type Merchant func(*sql.Selector)
+
+// MerchantAccount is the predicate function for merchantaccount builders.
+type MerchantAccount func(*sql.Selector)
+
 // PlatformAccount is the predicate function for platformaccount builders.
 type PlatformAccount func(*sql.Selector)
+
+// User is the predicate function for user builders.
+type User func(*sql.Selector)
+
+// UserLoginMethod is the predicate function for userloginmethod builders.
+type UserLoginMethod func(*sql.Selector)

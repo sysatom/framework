@@ -16,7 +16,7 @@ func (PlatformAccount) Fields() []ent.Field {
 		field.String("username").
 			Unique(),
 		field.String("password"),
-		field.String("email"),
+		field.String("email").Optional().Default(""),
 	}
 }
 

@@ -252,6 +252,16 @@ func EmailHasSuffix(v string) predicate.PlatformAccount {
 	return predicate.PlatformAccount(sql.FieldHasSuffix(FieldEmail, v))
 }
 
+// EmailIsNil applies the IsNil predicate on the "email" field.
+func EmailIsNil() predicate.PlatformAccount {
+	return predicate.PlatformAccount(sql.FieldIsNull(FieldEmail))
+}
+
+// EmailNotNil applies the NotNil predicate on the "email" field.
+func EmailNotNil() predicate.PlatformAccount {
+	return predicate.PlatformAccount(sql.FieldNotNull(FieldEmail))
+}
+
 // EmailEqualFold applies the EqualFold predicate on the "email" field.
 func EmailEqualFold(v string) predicate.PlatformAccount {
 	return predicate.PlatformAccount(sql.FieldEqualFold(FieldEmail, v))

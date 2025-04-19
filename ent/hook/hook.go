@@ -9,6 +9,30 @@ import (
 	"github.com/sysatom/framework/ent"
 )
 
+// The MerchantFunc type is an adapter to allow the use of ordinary
+// function as Merchant mutator.
+type MerchantFunc func(context.Context, *ent.MerchantMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MerchantFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MerchantMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MerchantMutation", m)
+}
+
+// The MerchantAccountFunc type is an adapter to allow the use of ordinary
+// function as MerchantAccount mutator.
+type MerchantAccountFunc func(context.Context, *ent.MerchantAccountMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MerchantAccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MerchantAccountMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MerchantAccountMutation", m)
+}
+
 // The PlatformAccountFunc type is an adapter to allow the use of ordinary
 // function as PlatformAccount mutator.
 type PlatformAccountFunc func(context.Context, *ent.PlatformAccountMutation) (ent.Value, error)
@@ -19,6 +43,30 @@ func (f PlatformAccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlatformAccountMutation", m)
+}
+
+// The UserFunc type is an adapter to allow the use of ordinary
+// function as User mutator.
+type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+}
+
+// The UserLoginMethodFunc type is an adapter to allow the use of ordinary
+// function as UserLoginMethod mutator.
+type UserLoginMethodFunc func(context.Context, *ent.UserLoginMethodMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserLoginMethodFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserLoginMethodMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserLoginMethodMutation", m)
 }
 
 // Condition is a hook condition function.
