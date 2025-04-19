@@ -82,7 +82,6 @@ func a() error {
 }
 
 func (controller HelloController) Ent(c echo.Context) error {
-
 	a1, err := controller.store.MerchantAccount.Create().
 		SetUsername(time.Now().String()).
 		SetPassword("123456").
