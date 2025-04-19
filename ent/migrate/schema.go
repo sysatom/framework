@@ -11,6 +11,9 @@ var (
 	// MerchantsColumns holds the columns for the "merchants" table.
 	MerchantsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "merchant_name", Type: field.TypeString},
 		{Name: "contact_person", Type: field.TypeString, Nullable: true},
 		{Name: "contact_phone", Type: field.TypeString, Nullable: true},
@@ -19,17 +22,26 @@ var (
 		{Name: "city", Type: field.TypeString, Nullable: true},
 		{Name: "district", Type: field.TypeString, Nullable: true},
 		{Name: "address", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
 	}
 	// MerchantsTable holds the schema information for the "merchants" table.
 	MerchantsTable = &schema.Table{
 		Name:       "merchants",
 		Columns:    MerchantsColumns,
 		PrimaryKey: []*schema.Column{MerchantsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "merchant_created_at_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{MerchantsColumns[1], MerchantsColumns[2]},
+			},
+		},
 	}
 	// MerchantAccountsColumns holds the columns for the "merchant_accounts" table.
 	MerchantAccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
@@ -45,15 +57,30 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "merchant_accounts_merchants_accounts",
-				Columns:    []*schema.Column{MerchantAccountsColumns[6]},
+				Columns:    []*schema.Column{MerchantAccountsColumns[9]},
 				RefColumns: []*schema.Column{MerchantsColumns[0]},
 				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "merchantaccount_created_at_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{MerchantAccountsColumns[1], MerchantAccountsColumns[2]},
+			},
+			{
+				Name:    "merchantaccount_is_main_account",
+				Unique:  false,
+				Columns: []*schema.Column{MerchantAccountsColumns[8]},
 			},
 		},
 	}
 	// PlatformAccountsColumns holds the columns for the "platform_accounts" table.
 	PlatformAccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
@@ -63,10 +90,20 @@ var (
 		Name:       "platform_accounts",
 		Columns:    PlatformAccountsColumns,
 		PrimaryKey: []*schema.Column{PlatformAccountsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "platformaccount_created_at_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{PlatformAccountsColumns[1], PlatformAccountsColumns[2]},
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "username", Type: field.TypeString},
 		{Name: "phone", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
@@ -81,21 +118,31 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "users_user_login_methods_introducer",
-				Columns:    []*schema.Column{UsersColumns[4]},
+				Columns:    []*schema.Column{UsersColumns[7]},
 				RefColumns: []*schema.Column{UserLoginMethodsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "users_merchants_default_merchant",
-				Columns:    []*schema.Column{UsersColumns[5]},
+				Columns:    []*schema.Column{UsersColumns[8]},
 				RefColumns: []*schema.Column{MerchantsColumns[0]},
 				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "user_created_at_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{UsersColumns[1], UsersColumns[2]},
 			},
 		},
 	}
 	// UserLoginMethodsColumns holds the columns for the "user_login_methods" table.
 	UserLoginMethodsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "login_type", Type: field.TypeString},
 		{Name: "identifier", Type: field.TypeString},
 		{Name: "user_login_methods", Type: field.TypeUint64, Nullable: true},
@@ -108,9 +155,16 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_login_methods_users_login_methods",
-				Columns:    []*schema.Column{UserLoginMethodsColumns[3]},
+				Columns:    []*schema.Column{UserLoginMethodsColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "userloginmethod_created_at_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{UserLoginMethodsColumns[1], UserLoginMethodsColumns[2]},
 			},
 		},
 	}

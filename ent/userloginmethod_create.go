@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +18,48 @@ type UserLoginMethodCreate struct {
 	config
 	mutation *UserLoginMethodMutation
 	hooks    []Hook
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (ulmc *UserLoginMethodCreate) SetCreatedAt(t time.Time) *UserLoginMethodCreate {
+	ulmc.mutation.SetCreatedAt(t)
+	return ulmc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ulmc *UserLoginMethodCreate) SetNillableCreatedAt(t *time.Time) *UserLoginMethodCreate {
+	if t != nil {
+		ulmc.SetCreatedAt(*t)
+	}
+	return ulmc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ulmc *UserLoginMethodCreate) SetUpdatedAt(t time.Time) *UserLoginMethodCreate {
+	ulmc.mutation.SetUpdatedAt(t)
+	return ulmc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ulmc *UserLoginMethodCreate) SetNillableUpdatedAt(t *time.Time) *UserLoginMethodCreate {
+	if t != nil {
+		ulmc.SetUpdatedAt(*t)
+	}
+	return ulmc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (ulmc *UserLoginMethodCreate) SetDeletedAt(t time.Time) *UserLoginMethodCreate {
+	ulmc.mutation.SetDeletedAt(t)
+	return ulmc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ulmc *UserLoginMethodCreate) SetNillableDeletedAt(t *time.Time) *UserLoginMethodCreate {
+	if t != nil {
+		ulmc.SetDeletedAt(*t)
+	}
+	return ulmc
 }
 
 // SetLoginType sets the "login_type" field.
@@ -80,6 +123,14 @@ func (ulmc *UserLoginMethodCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ulmc *UserLoginMethodCreate) defaults() {
+	if _, ok := ulmc.mutation.CreatedAt(); !ok {
+		v := userloginmethod.DefaultCreatedAt()
+		ulmc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ulmc.mutation.UpdatedAt(); !ok {
+		v := userloginmethod.DefaultUpdatedAt()
+		ulmc.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := ulmc.mutation.ID(); !ok {
 		v := userloginmethod.DefaultID()
 		ulmc.mutation.SetID(v)
@@ -88,6 +139,12 @@ func (ulmc *UserLoginMethodCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ulmc *UserLoginMethodCreate) check() error {
+	if _, ok := ulmc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserLoginMethod.created_at"`)}
+	}
+	if _, ok := ulmc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "UserLoginMethod.updated_at"`)}
+	}
 	if _, ok := ulmc.mutation.LoginType(); !ok {
 		return &ValidationError{Name: "login_type", err: errors.New(`ent: missing required field "UserLoginMethod.login_type"`)}
 	}
@@ -125,6 +182,18 @@ func (ulmc *UserLoginMethodCreate) createSpec() (*UserLoginMethod, *sqlgraph.Cre
 	if id, ok := ulmc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := ulmc.mutation.CreatedAt(); ok {
+		_spec.SetField(userloginmethod.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := ulmc.mutation.UpdatedAt(); ok {
+		_spec.SetField(userloginmethod.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := ulmc.mutation.DeletedAt(); ok {
+		_spec.SetField(userloginmethod.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := ulmc.mutation.LoginType(); ok {
 		_spec.SetField(userloginmethod.FieldLoginType, field.TypeString, value)

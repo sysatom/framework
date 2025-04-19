@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -25,6 +26,32 @@ type MerchantUpdate struct {
 // Where appends a list predicates to the MerchantUpdate builder.
 func (mu *MerchantUpdate) Where(ps ...predicate.Merchant) *MerchantUpdate {
 	mu.mutation.Where(ps...)
+	return mu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (mu *MerchantUpdate) SetUpdatedAt(t time.Time) *MerchantUpdate {
+	mu.mutation.SetUpdatedAt(t)
+	return mu
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (mu *MerchantUpdate) SetDeletedAt(t time.Time) *MerchantUpdate {
+	mu.mutation.SetDeletedAt(t)
+	return mu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (mu *MerchantUpdate) SetNillableDeletedAt(t *time.Time) *MerchantUpdate {
+	if t != nil {
+		mu.SetDeletedAt(*t)
+	}
+	return mu
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (mu *MerchantUpdate) ClearDeletedAt() *MerchantUpdate {
+	mu.mutation.ClearDeletedAt()
 	return mu
 }
 
@@ -225,6 +252,7 @@ func (mu *MerchantUpdate) RemoveAccounts(m ...*MerchantAccount) *MerchantUpdate 
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (mu *MerchantUpdate) Save(ctx context.Context) (int, error) {
+	mu.defaults()
 	return withHooks(ctx, mu.sqlSave, mu.mutation, mu.hooks)
 }
 
@@ -250,6 +278,14 @@ func (mu *MerchantUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (mu *MerchantUpdate) defaults() {
+	if _, ok := mu.mutation.UpdatedAt(); !ok {
+		v := merchant.UpdateDefaultUpdatedAt()
+		mu.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(merchant.Table, merchant.Columns, sqlgraph.NewFieldSpec(merchant.FieldID, field.TypeUint64))
 	if ps := mu.mutation.predicates; len(ps) > 0 {
@@ -258,6 +294,15 @@ func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := mu.mutation.UpdatedAt(); ok {
+		_spec.SetField(merchant.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := mu.mutation.DeletedAt(); ok {
+		_spec.SetField(merchant.FieldDeletedAt, field.TypeTime, value)
+	}
+	if mu.mutation.DeletedAtCleared() {
+		_spec.ClearField(merchant.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := mu.mutation.MerchantName(); ok {
 		_spec.SetField(merchant.FieldMerchantName, field.TypeString, value)
@@ -367,6 +412,32 @@ type MerchantUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *MerchantMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (muo *MerchantUpdateOne) SetUpdatedAt(t time.Time) *MerchantUpdateOne {
+	muo.mutation.SetUpdatedAt(t)
+	return muo
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (muo *MerchantUpdateOne) SetDeletedAt(t time.Time) *MerchantUpdateOne {
+	muo.mutation.SetDeletedAt(t)
+	return muo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (muo *MerchantUpdateOne) SetNillableDeletedAt(t *time.Time) *MerchantUpdateOne {
+	if t != nil {
+		muo.SetDeletedAt(*t)
+	}
+	return muo
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (muo *MerchantUpdateOne) ClearDeletedAt() *MerchantUpdateOne {
+	muo.mutation.ClearDeletedAt()
+	return muo
 }
 
 // SetMerchantName sets the "merchant_name" field.
@@ -579,6 +650,7 @@ func (muo *MerchantUpdateOne) Select(field string, fields ...string) *MerchantUp
 
 // Save executes the query and returns the updated Merchant entity.
 func (muo *MerchantUpdateOne) Save(ctx context.Context) (*Merchant, error) {
+	muo.defaults()
 	return withHooks(ctx, muo.sqlSave, muo.mutation, muo.hooks)
 }
 
@@ -601,6 +673,14 @@ func (muo *MerchantUpdateOne) Exec(ctx context.Context) error {
 func (muo *MerchantUpdateOne) ExecX(ctx context.Context) {
 	if err := muo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (muo *MerchantUpdateOne) defaults() {
+	if _, ok := muo.mutation.UpdatedAt(); !ok {
+		v := merchant.UpdateDefaultUpdatedAt()
+		muo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -629,6 +709,15 @@ func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := muo.mutation.UpdatedAt(); ok {
+		_spec.SetField(merchant.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := muo.mutation.DeletedAt(); ok {
+		_spec.SetField(merchant.FieldDeletedAt, field.TypeTime, value)
+	}
+	if muo.mutation.DeletedAtCleared() {
+		_spec.ClearField(merchant.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := muo.mutation.MerchantName(); ok {
 		_spec.SetField(merchant.FieldMerchantName, field.TypeString, value)

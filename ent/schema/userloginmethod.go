@@ -25,3 +25,9 @@ func (UserLoginMethod) Fields() []ent.Field {
 func (UserLoginMethod) Edges() []ent.Edge {
 	return nil
 }
+
+func (UserLoginMethod) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}

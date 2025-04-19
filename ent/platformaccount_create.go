@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +18,48 @@ type PlatformAccountCreate struct {
 	config
 	mutation *PlatformAccountMutation
 	hooks    []Hook
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (pac *PlatformAccountCreate) SetCreatedAt(t time.Time) *PlatformAccountCreate {
+	pac.mutation.SetCreatedAt(t)
+	return pac
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pac *PlatformAccountCreate) SetNillableCreatedAt(t *time.Time) *PlatformAccountCreate {
+	if t != nil {
+		pac.SetCreatedAt(*t)
+	}
+	return pac
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pac *PlatformAccountCreate) SetUpdatedAt(t time.Time) *PlatformAccountCreate {
+	pac.mutation.SetUpdatedAt(t)
+	return pac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (pac *PlatformAccountCreate) SetNillableUpdatedAt(t *time.Time) *PlatformAccountCreate {
+	if t != nil {
+		pac.SetUpdatedAt(*t)
+	}
+	return pac
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (pac *PlatformAccountCreate) SetDeletedAt(t time.Time) *PlatformAccountCreate {
+	pac.mutation.SetDeletedAt(t)
+	return pac
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (pac *PlatformAccountCreate) SetNillableDeletedAt(t *time.Time) *PlatformAccountCreate {
+	if t != nil {
+		pac.SetDeletedAt(*t)
+	}
+	return pac
 }
 
 // SetUsername sets the "username" field.
@@ -94,6 +137,14 @@ func (pac *PlatformAccountCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (pac *PlatformAccountCreate) defaults() {
+	if _, ok := pac.mutation.CreatedAt(); !ok {
+		v := platformaccount.DefaultCreatedAt()
+		pac.mutation.SetCreatedAt(v)
+	}
+	if _, ok := pac.mutation.UpdatedAt(); !ok {
+		v := platformaccount.DefaultUpdatedAt()
+		pac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := pac.mutation.Email(); !ok {
 		v := platformaccount.DefaultEmail
 		pac.mutation.SetEmail(v)
@@ -106,6 +157,12 @@ func (pac *PlatformAccountCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pac *PlatformAccountCreate) check() error {
+	if _, ok := pac.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "PlatformAccount.created_at"`)}
+	}
+	if _, ok := pac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PlatformAccount.updated_at"`)}
+	}
 	if _, ok := pac.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "PlatformAccount.username"`)}
 	}
@@ -143,6 +200,18 @@ func (pac *PlatformAccountCreate) createSpec() (*PlatformAccount, *sqlgraph.Crea
 	if id, ok := pac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := pac.mutation.CreatedAt(); ok {
+		_spec.SetField(platformaccount.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := pac.mutation.UpdatedAt(); ok {
+		_spec.SetField(platformaccount.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := pac.mutation.DeletedAt(); ok {
+		_spec.SetField(platformaccount.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := pac.mutation.Username(); ok {
 		_spec.SetField(platformaccount.FieldUsername, field.TypeString, value)

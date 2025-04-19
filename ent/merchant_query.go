@@ -299,12 +299,12 @@ func (mq *MerchantQuery) WithAccounts(opts ...func(*MerchantAccountQuery)) *Merc
 // Example:
 //
 //	var v []struct {
-//		MerchantName string `json:"merchant_name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Merchant.Query().
-//		GroupBy(merchant.FieldMerchantName).
+//		GroupBy(merchant.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (mq *MerchantQuery) GroupBy(field string, fields ...string) *MerchantGroupBy {
@@ -322,11 +322,11 @@ func (mq *MerchantQuery) GroupBy(field string, fields ...string) *MerchantGroupB
 // Example:
 //
 //	var v []struct {
-//		MerchantName string `json:"merchant_name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Merchant.Query().
-//		Select(merchant.FieldMerchantName).
+//		Select(merchant.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (mq *MerchantQuery) Select(fields ...string) *MerchantSelect {
 	mq.ctx.Fields = append(mq.ctx.Fields, fields...)

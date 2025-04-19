@@ -263,12 +263,12 @@ func (ulmq *UserLoginMethodQuery) Clone() *UserLoginMethodQuery {
 // Example:
 //
 //	var v []struct {
-//		LoginType string `json:"login_type,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserLoginMethod.Query().
-//		GroupBy(userloginmethod.FieldLoginType).
+//		GroupBy(userloginmethod.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (ulmq *UserLoginMethodQuery) GroupBy(field string, fields ...string) *UserLoginMethodGroupBy {
@@ -286,11 +286,11 @@ func (ulmq *UserLoginMethodQuery) GroupBy(field string, fields ...string) *UserL
 // Example:
 //
 //	var v []struct {
-//		LoginType string `json:"login_type,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.UserLoginMethod.Query().
-//		Select(userloginmethod.FieldLoginType).
+//		Select(userloginmethod.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (ulmq *UserLoginMethodQuery) Select(fields ...string) *UserLoginMethodSelect {
 	ulmq.ctx.Fields = append(ulmq.ctx.Fields, fields...)

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -24,6 +25,32 @@ type PlatformAccountUpdate struct {
 // Where appends a list predicates to the PlatformAccountUpdate builder.
 func (pau *PlatformAccountUpdate) Where(ps ...predicate.PlatformAccount) *PlatformAccountUpdate {
 	pau.mutation.Where(ps...)
+	return pau
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pau *PlatformAccountUpdate) SetUpdatedAt(t time.Time) *PlatformAccountUpdate {
+	pau.mutation.SetUpdatedAt(t)
+	return pau
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (pau *PlatformAccountUpdate) SetDeletedAt(t time.Time) *PlatformAccountUpdate {
+	pau.mutation.SetDeletedAt(t)
+	return pau
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (pau *PlatformAccountUpdate) SetNillableDeletedAt(t *time.Time) *PlatformAccountUpdate {
+	if t != nil {
+		pau.SetDeletedAt(*t)
+	}
+	return pau
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (pau *PlatformAccountUpdate) ClearDeletedAt() *PlatformAccountUpdate {
+	pau.mutation.ClearDeletedAt()
 	return pau
 }
 
@@ -82,6 +109,7 @@ func (pau *PlatformAccountUpdate) Mutation() *PlatformAccountMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pau *PlatformAccountUpdate) Save(ctx context.Context) (int, error) {
+	pau.defaults()
 	return withHooks(ctx, pau.sqlSave, pau.mutation, pau.hooks)
 }
 
@@ -107,6 +135,14 @@ func (pau *PlatformAccountUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pau *PlatformAccountUpdate) defaults() {
+	if _, ok := pau.mutation.UpdatedAt(); !ok {
+		v := platformaccount.UpdateDefaultUpdatedAt()
+		pau.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (pau *PlatformAccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(platformaccount.Table, platformaccount.Columns, sqlgraph.NewFieldSpec(platformaccount.FieldID, field.TypeUint64))
 	if ps := pau.mutation.predicates; len(ps) > 0 {
@@ -115,6 +151,15 @@ func (pau *PlatformAccountUpdate) sqlSave(ctx context.Context) (n int, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := pau.mutation.UpdatedAt(); ok {
+		_spec.SetField(platformaccount.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := pau.mutation.DeletedAt(); ok {
+		_spec.SetField(platformaccount.FieldDeletedAt, field.TypeTime, value)
+	}
+	if pau.mutation.DeletedAtCleared() {
+		_spec.ClearField(platformaccount.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := pau.mutation.Username(); ok {
 		_spec.SetField(platformaccount.FieldUsername, field.TypeString, value)
@@ -146,6 +191,32 @@ type PlatformAccountUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *PlatformAccountMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pauo *PlatformAccountUpdateOne) SetUpdatedAt(t time.Time) *PlatformAccountUpdateOne {
+	pauo.mutation.SetUpdatedAt(t)
+	return pauo
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (pauo *PlatformAccountUpdateOne) SetDeletedAt(t time.Time) *PlatformAccountUpdateOne {
+	pauo.mutation.SetDeletedAt(t)
+	return pauo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (pauo *PlatformAccountUpdateOne) SetNillableDeletedAt(t *time.Time) *PlatformAccountUpdateOne {
+	if t != nil {
+		pauo.SetDeletedAt(*t)
+	}
+	return pauo
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (pauo *PlatformAccountUpdateOne) ClearDeletedAt() *PlatformAccountUpdateOne {
+	pauo.mutation.ClearDeletedAt()
+	return pauo
 }
 
 // SetUsername sets the "username" field.
@@ -216,6 +287,7 @@ func (pauo *PlatformAccountUpdateOne) Select(field string, fields ...string) *Pl
 
 // Save executes the query and returns the updated PlatformAccount entity.
 func (pauo *PlatformAccountUpdateOne) Save(ctx context.Context) (*PlatformAccount, error) {
+	pauo.defaults()
 	return withHooks(ctx, pauo.sqlSave, pauo.mutation, pauo.hooks)
 }
 
@@ -238,6 +310,14 @@ func (pauo *PlatformAccountUpdateOne) Exec(ctx context.Context) error {
 func (pauo *PlatformAccountUpdateOne) ExecX(ctx context.Context) {
 	if err := pauo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (pauo *PlatformAccountUpdateOne) defaults() {
+	if _, ok := pauo.mutation.UpdatedAt(); !ok {
+		v := platformaccount.UpdateDefaultUpdatedAt()
+		pauo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -266,6 +346,15 @@ func (pauo *PlatformAccountUpdateOne) sqlSave(ctx context.Context) (_node *Platf
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := pauo.mutation.UpdatedAt(); ok {
+		_spec.SetField(platformaccount.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := pauo.mutation.DeletedAt(); ok {
+		_spec.SetField(platformaccount.FieldDeletedAt, field.TypeTime, value)
+	}
+	if pauo.mutation.DeletedAtCleared() {
+		_spec.ClearField(platformaccount.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := pauo.mutation.Username(); ok {
 		_spec.SetField(platformaccount.FieldUsername, field.TypeString, value)

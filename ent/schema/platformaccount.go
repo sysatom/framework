@@ -26,3 +26,9 @@ func (PlatformAccount) Fields() []ent.Field {
 func (PlatformAccount) Edges() []ent.Edge {
 	return nil
 }
+
+func (PlatformAccount) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}

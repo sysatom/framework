@@ -21,6 +21,48 @@ type MerchantCreate struct {
 	hooks    []Hook
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (mc *MerchantCreate) SetCreatedAt(t time.Time) *MerchantCreate {
+	mc.mutation.SetCreatedAt(t)
+	return mc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableCreatedAt(t *time.Time) *MerchantCreate {
+	if t != nil {
+		mc.SetCreatedAt(*t)
+	}
+	return mc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (mc *MerchantCreate) SetUpdatedAt(t time.Time) *MerchantCreate {
+	mc.mutation.SetUpdatedAt(t)
+	return mc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableUpdatedAt(t *time.Time) *MerchantCreate {
+	if t != nil {
+		mc.SetUpdatedAt(*t)
+	}
+	return mc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (mc *MerchantCreate) SetDeletedAt(t time.Time) *MerchantCreate {
+	mc.mutation.SetDeletedAt(t)
+	return mc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableDeletedAt(t *time.Time) *MerchantCreate {
+	if t != nil {
+		mc.SetDeletedAt(*t)
+	}
+	return mc
+}
+
 // SetMerchantName sets the "merchant_name" field.
 func (mc *MerchantCreate) SetMerchantName(s string) *MerchantCreate {
 	mc.mutation.SetMerchantName(s)
@@ -125,20 +167,6 @@ func (mc *MerchantCreate) SetNillableAddress(s *string) *MerchantCreate {
 	return mc
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (mc *MerchantCreate) SetCreatedAt(t time.Time) *MerchantCreate {
-	mc.mutation.SetCreatedAt(t)
-	return mc
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (mc *MerchantCreate) SetNillableCreatedAt(t *time.Time) *MerchantCreate {
-	if t != nil {
-		mc.SetCreatedAt(*t)
-	}
-	return mc
-}
-
 // SetID sets the "id" field.
 func (mc *MerchantCreate) SetID(u uint64) *MerchantCreate {
 	mc.mutation.SetID(u)
@@ -207,6 +235,10 @@ func (mc *MerchantCreate) defaults() {
 		v := merchant.DefaultCreatedAt()
 		mc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := mc.mutation.UpdatedAt(); !ok {
+		v := merchant.DefaultUpdatedAt()
+		mc.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := mc.mutation.ID(); !ok {
 		v := merchant.DefaultID()
 		mc.mutation.SetID(v)
@@ -215,11 +247,14 @@ func (mc *MerchantCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mc *MerchantCreate) check() error {
-	if _, ok := mc.mutation.MerchantName(); !ok {
-		return &ValidationError{Name: "merchant_name", err: errors.New(`ent: missing required field "Merchant.merchant_name"`)}
-	}
 	if _, ok := mc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Merchant.created_at"`)}
+	}
+	if _, ok := mc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Merchant.updated_at"`)}
+	}
+	if _, ok := mc.mutation.MerchantName(); !ok {
+		return &ValidationError{Name: "merchant_name", err: errors.New(`ent: missing required field "Merchant.merchant_name"`)}
 	}
 	return nil
 }
@@ -253,6 +288,18 @@ func (mc *MerchantCreate) createSpec() (*Merchant, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := mc.mutation.CreatedAt(); ok {
+		_spec.SetField(merchant.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := mc.mutation.UpdatedAt(); ok {
+		_spec.SetField(merchant.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := mc.mutation.DeletedAt(); ok {
+		_spec.SetField(merchant.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
+	}
 	if value, ok := mc.mutation.MerchantName(); ok {
 		_spec.SetField(merchant.FieldMerchantName, field.TypeString, value)
 		_node.MerchantName = value
@@ -284,10 +331,6 @@ func (mc *MerchantCreate) createSpec() (*Merchant, *sqlgraph.CreateSpec) {
 	if value, ok := mc.mutation.Address(); ok {
 		_spec.SetField(merchant.FieldAddress, field.TypeString, value)
 		_node.Address = value
-	}
-	if value, ok := mc.mutation.CreatedAt(); ok {
-		_spec.SetField(merchant.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
 	}
 	if nodes := mc.mutation.AccountsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

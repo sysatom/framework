@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -16,6 +17,12 @@ type UserLoginMethod struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uint64 `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// LoginType holds the value of the "login_type" field.
 	LoginType string `json:"login_type,omitempty"`
 	// Identifier holds the value of the "identifier" field.
@@ -33,6 +40,8 @@ func (*UserLoginMethod) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case userloginmethod.FieldLoginType, userloginmethod.FieldIdentifier:
 			values[i] = new(sql.NullString)
+		case userloginmethod.FieldCreatedAt, userloginmethod.FieldUpdatedAt, userloginmethod.FieldDeletedAt:
+			values[i] = new(sql.NullTime)
 		case userloginmethod.ForeignKeys[0]: // user_login_methods
 			values[i] = new(sql.NullInt64)
 		default:
@@ -56,6 +65,24 @@ func (ulm *UserLoginMethod) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			ulm.ID = uint64(value.Int64)
+		case userloginmethod.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				ulm.CreatedAt = value.Time
+			}
+		case userloginmethod.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				ulm.UpdatedAt = value.Time
+			}
+		case userloginmethod.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				ulm.DeletedAt = value.Time
+			}
 		case userloginmethod.FieldLoginType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field login_type", values[i])
@@ -111,6 +138,15 @@ func (ulm *UserLoginMethod) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserLoginMethod(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ulm.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(ulm.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(ulm.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(ulm.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("login_type=")
 	builder.WriteString(ulm.LoginType)
 	builder.WriteString(", ")

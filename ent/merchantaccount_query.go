@@ -263,12 +263,12 @@ func (maq *MerchantAccountQuery) Clone() *MerchantAccountQuery {
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.MerchantAccount.Query().
-//		GroupBy(merchantaccount.FieldUsername).
+//		GroupBy(merchantaccount.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (maq *MerchantAccountQuery) GroupBy(field string, fields ...string) *MerchantAccountGroupBy {
@@ -286,11 +286,11 @@ func (maq *MerchantAccountQuery) GroupBy(field string, fields ...string) *Mercha
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.MerchantAccount.Query().
-//		Select(merchantaccount.FieldUsername).
+//		Select(merchantaccount.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (maq *MerchantAccountQuery) Select(fields ...string) *MerchantAccountSelect {
 	maq.ctx.Fields = append(maq.ctx.Fields, fields...)

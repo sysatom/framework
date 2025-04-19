@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +18,48 @@ type MerchantAccountCreate struct {
 	config
 	mutation *MerchantAccountMutation
 	hooks    []Hook
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (mac *MerchantAccountCreate) SetCreatedAt(t time.Time) *MerchantAccountCreate {
+	mac.mutation.SetCreatedAt(t)
+	return mac
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (mac *MerchantAccountCreate) SetNillableCreatedAt(t *time.Time) *MerchantAccountCreate {
+	if t != nil {
+		mac.SetCreatedAt(*t)
+	}
+	return mac
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (mac *MerchantAccountCreate) SetUpdatedAt(t time.Time) *MerchantAccountCreate {
+	mac.mutation.SetUpdatedAt(t)
+	return mac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (mac *MerchantAccountCreate) SetNillableUpdatedAt(t *time.Time) *MerchantAccountCreate {
+	if t != nil {
+		mac.SetUpdatedAt(*t)
+	}
+	return mac
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (mac *MerchantAccountCreate) SetDeletedAt(t time.Time) *MerchantAccountCreate {
+	mac.mutation.SetDeletedAt(t)
+	return mac
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (mac *MerchantAccountCreate) SetNillableDeletedAt(t *time.Time) *MerchantAccountCreate {
+	if t != nil {
+		mac.SetDeletedAt(*t)
+	}
+	return mac
 }
 
 // SetUsername sets the "username" field.
@@ -122,6 +165,14 @@ func (mac *MerchantAccountCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (mac *MerchantAccountCreate) defaults() {
+	if _, ok := mac.mutation.CreatedAt(); !ok {
+		v := merchantaccount.DefaultCreatedAt()
+		mac.mutation.SetCreatedAt(v)
+	}
+	if _, ok := mac.mutation.UpdatedAt(); !ok {
+		v := merchantaccount.DefaultUpdatedAt()
+		mac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := mac.mutation.Email(); !ok {
 		v := merchantaccount.DefaultEmail
 		mac.mutation.SetEmail(v)
@@ -142,6 +193,12 @@ func (mac *MerchantAccountCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mac *MerchantAccountCreate) check() error {
+	if _, ok := mac.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "MerchantAccount.created_at"`)}
+	}
+	if _, ok := mac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "MerchantAccount.updated_at"`)}
+	}
 	if _, ok := mac.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "MerchantAccount.username"`)}
 	}
@@ -182,6 +239,18 @@ func (mac *MerchantAccountCreate) createSpec() (*MerchantAccount, *sqlgraph.Crea
 	if id, ok := mac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := mac.mutation.CreatedAt(); ok {
+		_spec.SetField(merchantaccount.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := mac.mutation.UpdatedAt(); ok {
+		_spec.SetField(merchantaccount.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := mac.mutation.DeletedAt(); ok {
+		_spec.SetField(merchantaccount.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := mac.mutation.Username(); ok {
 		_spec.SetField(merchantaccount.FieldUsername, field.TypeString, value)

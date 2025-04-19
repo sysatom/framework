@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -16,6 +17,12 @@ type MerchantAccount struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uint64 `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -41,6 +48,8 @@ func (*MerchantAccount) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case merchantaccount.FieldUsername, merchantaccount.FieldPassword, merchantaccount.FieldEmail, merchantaccount.FieldPhone:
 			values[i] = new(sql.NullString)
+		case merchantaccount.FieldCreatedAt, merchantaccount.FieldUpdatedAt, merchantaccount.FieldDeletedAt:
+			values[i] = new(sql.NullTime)
 		case merchantaccount.ForeignKeys[0]: // merchant_accounts
 			values[i] = new(sql.NullInt64)
 		default:
@@ -64,6 +73,24 @@ func (ma *MerchantAccount) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			ma.ID = uint64(value.Int64)
+		case merchantaccount.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				ma.CreatedAt = value.Time
+			}
+		case merchantaccount.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				ma.UpdatedAt = value.Time
+			}
+		case merchantaccount.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				ma.DeletedAt = value.Time
+			}
 		case merchantaccount.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -137,6 +164,15 @@ func (ma *MerchantAccount) String() string {
 	var builder strings.Builder
 	builder.WriteString("MerchantAccount(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ma.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(ma.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(ma.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(ma.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("username=")
 	builder.WriteString(ma.Username)
 	builder.WriteString(", ")

@@ -262,12 +262,12 @@ func (paq *PlatformAccountQuery) Clone() *PlatformAccountQuery {
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.PlatformAccount.Query().
-//		GroupBy(platformaccount.FieldUsername).
+//		GroupBy(platformaccount.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (paq *PlatformAccountQuery) GroupBy(field string, fields ...string) *PlatformAccountGroupBy {
@@ -285,11 +285,11 @@ func (paq *PlatformAccountQuery) GroupBy(field string, fields ...string) *Platfo
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.PlatformAccount.Query().
-//		Select(platformaccount.FieldUsername).
+//		Select(platformaccount.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (paq *PlatformAccountQuery) Select(fields ...string) *PlatformAccountSelect {
 	paq.ctx.Fields = append(paq.ctx.Fields, fields...)

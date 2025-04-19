@@ -17,18 +17,40 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	merchantMixin := schema.Merchant{}.Mixin()
+	merchantMixinFields0 := merchantMixin[0].Fields()
+	_ = merchantMixinFields0
 	merchantFields := schema.Merchant{}.Fields()
 	_ = merchantFields
 	// merchantDescCreatedAt is the schema descriptor for created_at field.
-	merchantDescCreatedAt := merchantFields[9].Descriptor()
+	merchantDescCreatedAt := merchantMixinFields0[0].Descriptor()
 	// merchant.DefaultCreatedAt holds the default value on creation for the created_at field.
 	merchant.DefaultCreatedAt = merchantDescCreatedAt.Default.(func() time.Time)
+	// merchantDescUpdatedAt is the schema descriptor for updated_at field.
+	merchantDescUpdatedAt := merchantMixinFields0[1].Descriptor()
+	// merchant.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	merchant.DefaultUpdatedAt = merchantDescUpdatedAt.Default.(func() time.Time)
+	// merchant.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	merchant.UpdateDefaultUpdatedAt = merchantDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// merchantDescID is the schema descriptor for id field.
 	merchantDescID := merchantFields[0].Descriptor()
 	// merchant.DefaultID holds the default value on creation for the id field.
 	merchant.DefaultID = merchantDescID.Default.(func() uint64)
+	merchantaccountMixin := schema.MerchantAccount{}.Mixin()
+	merchantaccountMixinFields0 := merchantaccountMixin[0].Fields()
+	_ = merchantaccountMixinFields0
 	merchantaccountFields := schema.MerchantAccount{}.Fields()
 	_ = merchantaccountFields
+	// merchantaccountDescCreatedAt is the schema descriptor for created_at field.
+	merchantaccountDescCreatedAt := merchantaccountMixinFields0[0].Descriptor()
+	// merchantaccount.DefaultCreatedAt holds the default value on creation for the created_at field.
+	merchantaccount.DefaultCreatedAt = merchantaccountDescCreatedAt.Default.(func() time.Time)
+	// merchantaccountDescUpdatedAt is the schema descriptor for updated_at field.
+	merchantaccountDescUpdatedAt := merchantaccountMixinFields0[1].Descriptor()
+	// merchantaccount.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	merchantaccount.DefaultUpdatedAt = merchantaccountDescUpdatedAt.Default.(func() time.Time)
+	// merchantaccount.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	merchantaccount.UpdateDefaultUpdatedAt = merchantaccountDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// merchantaccountDescEmail is the schema descriptor for email field.
 	merchantaccountDescEmail := merchantaccountFields[3].Descriptor()
 	// merchantaccount.DefaultEmail holds the default value on creation for the email field.
@@ -45,8 +67,21 @@ func init() {
 	merchantaccountDescID := merchantaccountFields[0].Descriptor()
 	// merchantaccount.DefaultID holds the default value on creation for the id field.
 	merchantaccount.DefaultID = merchantaccountDescID.Default.(func() uint64)
+	platformaccountMixin := schema.PlatformAccount{}.Mixin()
+	platformaccountMixinFields0 := platformaccountMixin[0].Fields()
+	_ = platformaccountMixinFields0
 	platformaccountFields := schema.PlatformAccount{}.Fields()
 	_ = platformaccountFields
+	// platformaccountDescCreatedAt is the schema descriptor for created_at field.
+	platformaccountDescCreatedAt := platformaccountMixinFields0[0].Descriptor()
+	// platformaccount.DefaultCreatedAt holds the default value on creation for the created_at field.
+	platformaccount.DefaultCreatedAt = platformaccountDescCreatedAt.Default.(func() time.Time)
+	// platformaccountDescUpdatedAt is the schema descriptor for updated_at field.
+	platformaccountDescUpdatedAt := platformaccountMixinFields0[1].Descriptor()
+	// platformaccount.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	platformaccount.DefaultUpdatedAt = platformaccountDescUpdatedAt.Default.(func() time.Time)
+	// platformaccount.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	platformaccount.UpdateDefaultUpdatedAt = platformaccountDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// platformaccountDescEmail is the schema descriptor for email field.
 	platformaccountDescEmail := platformaccountFields[3].Descriptor()
 	// platformaccount.DefaultEmail holds the default value on creation for the email field.
@@ -55,8 +90,21 @@ func init() {
 	platformaccountDescID := platformaccountFields[0].Descriptor()
 	// platformaccount.DefaultID holds the default value on creation for the id field.
 	platformaccount.DefaultID = platformaccountDescID.Default.(func() uint64)
+	userMixin := schema.User{}.Mixin()
+	userMixinFields0 := userMixin[0].Fields()
+	_ = userMixinFields0
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescCreatedAt is the schema descriptor for created_at field.
+	userDescCreatedAt := userMixinFields0[0].Descriptor()
+	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
+	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
+	// userDescUpdatedAt is the schema descriptor for updated_at field.
+	userDescUpdatedAt := userMixinFields0[1].Descriptor()
+	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
+	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// userDescPhone is the schema descriptor for phone field.
 	userDescPhone := userFields[2].Descriptor()
 	// user.DefaultPhone holds the default value on creation for the phone field.
@@ -69,8 +117,21 @@ func init() {
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.
 	user.DefaultID = userDescID.Default.(func() uint64)
+	userloginmethodMixin := schema.UserLoginMethod{}.Mixin()
+	userloginmethodMixinFields0 := userloginmethodMixin[0].Fields()
+	_ = userloginmethodMixinFields0
 	userloginmethodFields := schema.UserLoginMethod{}.Fields()
 	_ = userloginmethodFields
+	// userloginmethodDescCreatedAt is the schema descriptor for created_at field.
+	userloginmethodDescCreatedAt := userloginmethodMixinFields0[0].Descriptor()
+	// userloginmethod.DefaultCreatedAt holds the default value on creation for the created_at field.
+	userloginmethod.DefaultCreatedAt = userloginmethodDescCreatedAt.Default.(func() time.Time)
+	// userloginmethodDescUpdatedAt is the schema descriptor for updated_at field.
+	userloginmethodDescUpdatedAt := userloginmethodMixinFields0[1].Descriptor()
+	// userloginmethod.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	userloginmethod.DefaultUpdatedAt = userloginmethodDescUpdatedAt.Default.(func() time.Time)
+	// userloginmethod.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	userloginmethod.UpdateDefaultUpdatedAt = userloginmethodDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// userloginmethodDescID is the schema descriptor for id field.
 	userloginmethodDescID := userloginmethodFields[0].Descriptor()
 	// userloginmethod.DefaultID holds the default value on creation for the id field.

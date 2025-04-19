@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/sysatom/framework/pkg/types"
 )
 
@@ -27,4 +28,16 @@ func (MerchantAccount) Fields() []ent.Field {
 // Edges of the MerchantAccount.
 func (MerchantAccount) Edges() []ent.Edge {
 	return nil
+}
+
+func (MerchantAccount) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("is_main_account"),
+	}
+}
+
+func (MerchantAccount) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
 }

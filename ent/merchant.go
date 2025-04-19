@@ -17,6 +17,12 @@ type Merchant struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uint64 `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// MerchantName holds the value of the "merchant_name" field.
 	MerchantName string `json:"merchant_name,omitempty"`
 	// ContactPerson holds the value of the "contact_person" field.
@@ -33,8 +39,6 @@ type Merchant struct {
 	District string `json:"district,omitempty"`
 	// Address holds the value of the "address" field.
 	Address string `json:"address,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MerchantQuery when eager-loading is set.
 	Edges        MerchantEdges `json:"edges"`
@@ -68,7 +72,7 @@ func (*Merchant) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case merchant.FieldMerchantName, merchant.FieldContactPerson, merchant.FieldContactPhone, merchant.FieldCountry, merchant.FieldProvince, merchant.FieldCity, merchant.FieldDistrict, merchant.FieldAddress:
 			values[i] = new(sql.NullString)
-		case merchant.FieldCreatedAt:
+		case merchant.FieldCreatedAt, merchant.FieldUpdatedAt, merchant.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -91,6 +95,24 @@ func (m *Merchant) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			m.ID = uint64(value.Int64)
+		case merchant.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				m.CreatedAt = value.Time
+			}
+		case merchant.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				m.UpdatedAt = value.Time
+			}
+		case merchant.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				m.DeletedAt = value.Time
+			}
 		case merchant.FieldMerchantName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field merchant_name", values[i])
@@ -139,12 +161,6 @@ func (m *Merchant) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				m.Address = value.String
 			}
-		case merchant.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				m.CreatedAt = value.Time
-			}
 		default:
 			m.selectValues.Set(columns[i], values[i])
 		}
@@ -186,6 +202,15 @@ func (m *Merchant) String() string {
 	var builder strings.Builder
 	builder.WriteString("Merchant(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(m.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("merchant_name=")
 	builder.WriteString(m.MerchantName)
 	builder.WriteString(", ")
@@ -209,9 +234,6 @@ func (m *Merchant) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("address=")
 	builder.WriteString(m.Address)
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

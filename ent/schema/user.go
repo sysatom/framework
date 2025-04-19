@@ -32,3 +32,9 @@ func (User) Edges() []ent.Edge {
 		edge.To("default_merchant", Merchant.Type).Unique(),
 	}
 }
+
+func (User) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}

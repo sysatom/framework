@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -24,6 +25,32 @@ type UserLoginMethodUpdate struct {
 // Where appends a list predicates to the UserLoginMethodUpdate builder.
 func (ulmu *UserLoginMethodUpdate) Where(ps ...predicate.UserLoginMethod) *UserLoginMethodUpdate {
 	ulmu.mutation.Where(ps...)
+	return ulmu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ulmu *UserLoginMethodUpdate) SetUpdatedAt(t time.Time) *UserLoginMethodUpdate {
+	ulmu.mutation.SetUpdatedAt(t)
+	return ulmu
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (ulmu *UserLoginMethodUpdate) SetDeletedAt(t time.Time) *UserLoginMethodUpdate {
+	ulmu.mutation.SetDeletedAt(t)
+	return ulmu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ulmu *UserLoginMethodUpdate) SetNillableDeletedAt(t *time.Time) *UserLoginMethodUpdate {
+	if t != nil {
+		ulmu.SetDeletedAt(*t)
+	}
+	return ulmu
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (ulmu *UserLoginMethodUpdate) ClearDeletedAt() *UserLoginMethodUpdate {
+	ulmu.mutation.ClearDeletedAt()
 	return ulmu
 }
 
@@ -62,6 +89,7 @@ func (ulmu *UserLoginMethodUpdate) Mutation() *UserLoginMethodMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ulmu *UserLoginMethodUpdate) Save(ctx context.Context) (int, error) {
+	ulmu.defaults()
 	return withHooks(ctx, ulmu.sqlSave, ulmu.mutation, ulmu.hooks)
 }
 
@@ -87,6 +115,14 @@ func (ulmu *UserLoginMethodUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ulmu *UserLoginMethodUpdate) defaults() {
+	if _, ok := ulmu.mutation.UpdatedAt(); !ok {
+		v := userloginmethod.UpdateDefaultUpdatedAt()
+		ulmu.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (ulmu *UserLoginMethodUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(userloginmethod.Table, userloginmethod.Columns, sqlgraph.NewFieldSpec(userloginmethod.FieldID, field.TypeUint64))
 	if ps := ulmu.mutation.predicates; len(ps) > 0 {
@@ -95,6 +131,15 @@ func (ulmu *UserLoginMethodUpdate) sqlSave(ctx context.Context) (n int, err erro
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ulmu.mutation.UpdatedAt(); ok {
+		_spec.SetField(userloginmethod.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := ulmu.mutation.DeletedAt(); ok {
+		_spec.SetField(userloginmethod.FieldDeletedAt, field.TypeTime, value)
+	}
+	if ulmu.mutation.DeletedAtCleared() {
+		_spec.ClearField(userloginmethod.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := ulmu.mutation.LoginType(); ok {
 		_spec.SetField(userloginmethod.FieldLoginType, field.TypeString, value)
@@ -120,6 +165,32 @@ type UserLoginMethodUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserLoginMethodMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ulmuo *UserLoginMethodUpdateOne) SetUpdatedAt(t time.Time) *UserLoginMethodUpdateOne {
+	ulmuo.mutation.SetUpdatedAt(t)
+	return ulmuo
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (ulmuo *UserLoginMethodUpdateOne) SetDeletedAt(t time.Time) *UserLoginMethodUpdateOne {
+	ulmuo.mutation.SetDeletedAt(t)
+	return ulmuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ulmuo *UserLoginMethodUpdateOne) SetNillableDeletedAt(t *time.Time) *UserLoginMethodUpdateOne {
+	if t != nil {
+		ulmuo.SetDeletedAt(*t)
+	}
+	return ulmuo
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (ulmuo *UserLoginMethodUpdateOne) ClearDeletedAt() *UserLoginMethodUpdateOne {
+	ulmuo.mutation.ClearDeletedAt()
+	return ulmuo
 }
 
 // SetLoginType sets the "login_type" field.
@@ -170,6 +241,7 @@ func (ulmuo *UserLoginMethodUpdateOne) Select(field string, fields ...string) *U
 
 // Save executes the query and returns the updated UserLoginMethod entity.
 func (ulmuo *UserLoginMethodUpdateOne) Save(ctx context.Context) (*UserLoginMethod, error) {
+	ulmuo.defaults()
 	return withHooks(ctx, ulmuo.sqlSave, ulmuo.mutation, ulmuo.hooks)
 }
 
@@ -192,6 +264,14 @@ func (ulmuo *UserLoginMethodUpdateOne) Exec(ctx context.Context) error {
 func (ulmuo *UserLoginMethodUpdateOne) ExecX(ctx context.Context) {
 	if err := ulmuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ulmuo *UserLoginMethodUpdateOne) defaults() {
+	if _, ok := ulmuo.mutation.UpdatedAt(); !ok {
+		v := userloginmethod.UpdateDefaultUpdatedAt()
+		ulmuo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -220,6 +300,15 @@ func (ulmuo *UserLoginMethodUpdateOne) sqlSave(ctx context.Context) (_node *User
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ulmuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(userloginmethod.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := ulmuo.mutation.DeletedAt(); ok {
+		_spec.SetField(userloginmethod.FieldDeletedAt, field.TypeTime, value)
+	}
+	if ulmuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(userloginmethod.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := ulmuo.mutation.LoginType(); ok {
 		_spec.SetField(userloginmethod.FieldLoginType, field.TypeString, value)

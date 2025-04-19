@@ -5,7 +5,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/sysatom/framework/pkg/types"
-	"time"
 )
 
 // Merchant holds the schema definition for the Merchant entity.
@@ -25,9 +24,6 @@ func (Merchant) Fields() []ent.Field {
 		field.String("city").Optional(),
 		field.String("district").Optional(),
 		field.String("address").Optional(),
-		field.Time("created_at").
-			Default(time.Now).
-			Immutable(),
 	}
 }
 
@@ -35,5 +31,11 @@ func (Merchant) Fields() []ent.Field {
 func (Merchant) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("accounts", MerchantAccount.Type),
+	}
+}
+
+func (Merchant) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
 	}
 }
