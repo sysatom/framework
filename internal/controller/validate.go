@@ -14,6 +14,13 @@ import (
 	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 )
 
+type ValidateController struct {
+}
+
+func NewValidateController() ValidateController {
+	return ValidateController{}
+}
+
 // User contains user information
 type User struct {
 	FirstName      string     `validate:"required"`
@@ -36,7 +43,7 @@ type Address struct {
 // use a single instance of Validate, it caches struct info
 var validate *validator.Validate
 
-func Validate(c echo.Context) error {
+func (controller ValidateController) Validate(c echo.Context) error {
 	zhT := zh.New()
 	uni := ut.New(zhT, zhT)
 

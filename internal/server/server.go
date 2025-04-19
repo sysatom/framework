@@ -3,98 +3,32 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"runtime"
-	"strings"
-	"time"
-
+	"github.com/bytedance/sonic"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sysatom/framework/pkg/config"
-	"github.com/sysatom/framework/pkg/utils"
-	"github.com/sysatom/framework/version"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
+	"log"
+	"net/http"
+	"time"
 )
 
-var (
-	// swagger
-	swagHandler echo.HandlerFunc
-)
-
-func Initialize() error {
-	var err error
-
-	// init timezone
-	if err = initializeTimezone(); err != nil {
-		return err
-	}
-	log.Println("initialize Timezone ok")
-
-	// init config
-	if err = initializeConfig(); err != nil {
-		return err
-	}
-	log.Println("initialize Config ok")
-
-	return nil
+func NewHTTPServer(config.Type) *echo.Echo {
+	return echo.New()
 }
 
-func initializeTimezone() error {
-	_, err := time.LoadLocation("Local")
-	if err != nil {
-		return fmt.Errorf("load time location error, %w", err)
-	}
-	return nil
-}
-
-func initializeConfig() error {
-	executable, _ := os.Executable()
-
-	curwd, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("Couldn't get current working directory: %v", err)
-	}
-
-	log.Printf("version %s:%s:%s; pid %d; %d process(es)\n",
-		version.Buildtags, executable, version.Buildstamp,
-		os.Getpid(), runtime.GOMAXPROCS(runtime.NumCPU()))
-
-	configFile := utils.ToAbsolutePath(curwd, "config.yaml")
-	log.Printf("Using config from '%s'\n", configFile)
-
-	// Load config
-	config.Load(".", curwd)
-
-	// Configure root path for serving API calls.
-	if config.App.ApiPath == "" {
-		config.App.ApiPath = defaultApiPath
-	} else {
-		if !strings.HasPrefix(config.App.ApiPath, "/") {
-			config.App.ApiPath = "/" + config.App.ApiPath
-		}
-		if !strings.HasSuffix(config.App.ApiPath, "/") {
-			config.App.ApiPath += "/"
-		}
-	}
-	log.Printf("API served from root URL path '%s'\n", config.App.ApiPath)
-
-	// log level
-	// flog.SetLevel(config.App.Log.Level)
-
-	return nil
-}
-
-func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
-	// Set up HTTP server.
-	httpServer := echo.New()
-
+func RegisterHooks(lc fx.Lifecycle, httpServer *echo.Echo) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
+			// initialize
+			if err := initialize(); err != nil {
+				return fmt.Errorf("failed to initialize: %w", err)
+			}
+
 			// setting
 			httpServer.HideBanner = true
 			httpServer.JSONSerializer = &DefaultJSONSerializer{}
@@ -168,7 +102,7 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 					return c.Request().URL.Path == "/health"
 				},
 				LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-					logger.Info("request",
+					c.Logger().Info("request",
 						zap.String("URI", v.URI),
 						zap.Int("status", v.Status),
 					)
@@ -183,12 +117,12 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 			}
 
 			// router
-			setupRouter(httpServer)
+			//setupRouter(httpServer)
 
 			go func() {
 				err := httpServer.Start(config.App.Listen)
 				if err != nil {
-					logger.Panic(err.Error())
+					httpServer.Logger.Panic(err.Error())
 				}
 			}()
 
@@ -198,6 +132,31 @@ func NewHTTPServer(lc fx.Lifecycle, logger *zap.Logger) *echo.Echo {
 			return httpServer.Shutdown(ctx)
 		},
 	})
+}
 
-	return httpServer
+// DefaultJSONSerializer implements JSON encoding using encoding/json.
+type DefaultJSONSerializer struct{}
+
+// Serialize converts an interface into a json and writes it to the response.
+// You can optionally use the indent parameter to produce pretty JSONs.
+func (d DefaultJSONSerializer) Serialize(c echo.Context, i interface{}, indent string) error {
+	enc := sonic.ConfigDefault.NewEncoder(c.Response())
+	if indent != "" {
+		enc.SetIndent("", indent)
+	}
+	return enc.Encode(i)
+}
+
+// Deserialize reads a JSON from a request body and converts it into an interface.
+func (d DefaultJSONSerializer) Deserialize(c echo.Context, i interface{}) error {
+	err := sonic.ConfigDefault.NewDecoder(c.Request().Body).Decode(i)
+	var ute *json.UnmarshalTypeError
+	if errors.As(err, &ute) {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Unmarshal type error: expected=%v, got=%v, field=%v, offset=%v", ute.Type, ute.Value, ute.Field, ute.Offset)).SetInternal(err)
+	}
+	var se *json.SyntaxError
+	if errors.As(err, &se) {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Syntax error: offset=%v, error=%v", se.Offset, se.Error())).SetInternal(err)
+	}
+	return err
 }

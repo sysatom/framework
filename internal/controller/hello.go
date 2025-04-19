@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/oops"
+	"github.com/sysatom/framework/ent"
 	"github.com/sysatom/framework/pkg/types"
 	"github.com/sysatom/framework/pkg/types/protocol"
 	"github.com/sysatom/framework/pkg/zlog"
@@ -11,6 +12,16 @@ import (
 	"net/http"
 	"time"
 )
+
+type HelloController struct {
+	store *ent.Client
+}
+
+func NewHelloController(store *ent.Client) HelloController {
+	return HelloController{
+		store: store,
+	}
+}
 
 // ShowAccount godoc
 //
@@ -22,7 +33,7 @@ import (
 //	@Param			id	path		int	true	"Account ID"
 //	@Success		200	{object}	types.FileDef
 //	@Router			/hello/{id} [get]
-func Hello(c echo.Context) error {
+func (controller HelloController) Hello(c echo.Context) error {
 	err := a()
 	if err != nil {
 		l := zlog.NewZlog()
@@ -65,4 +76,8 @@ func b() error {
 
 func a() error {
 	return b()
+}
+
+func (controller HelloController) Ent(c echo.Context) error {
+	return c.String(http.StatusOK, "ent")
 }

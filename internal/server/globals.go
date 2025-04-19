@@ -19,8 +19,3 @@ var globals struct {
 	// Cron
 	//cronRuleset []*cron.Ruleset
 }
-
-const (
-	// Base URL path for serving the streaming API.
-	defaultApiPath = "/"
-)

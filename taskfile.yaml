@@ -21,17 +21,9 @@ tasks:
     cmds:
       - go build -v -o tmp github.com/sysatom/framework/cmd
 
-  build:agent:
-    cmds:
-      - go build -v -o tmp github.com/sysatom/framework/cmd/agent
-
   run:
     cmds:
       - go run -tags swagger github.com/sysatom/framework/cmd
-
-  run:agent:
-    cmds:
-      - go run github.com/sysatom/framework/cmd/agent
 
   cloc:
     cmds:
@@ -69,17 +61,13 @@ tasks:
     cmds:
       - govulncheck ./...
 
-  dao:
+  model:
     cmds:
-      - go run github.com/sysatom/framework/cmd/composer dao
+      - go run -mod=mod entgo.io/ent/cmd/ent new {{ .CLI_ARGS }}
 
-  migrate:
+  ent:
     cmds:
-      - go run github.com/sysatom/framework/cmd/composer migrate import
-
-  migration:
-    cmds:
-      - go run github.com/sysatom/framework/cmd/composer migrate migration -name {{ .CLI_ARGS }}
+      - go generate ./ent
 
   tidy:
     cmds:
@@ -89,10 +77,6 @@ tasks:
     cmds:
       - gitleaks git -v
 
-  snapshot:
-    cmds:
-      - goreleaser release --snapshot --clean
-
   format:
     cmds:
       - go fmt ./...
@@ -100,7 +84,7 @@ tasks:
 
   air:
     cmds:
-      - air --build.cmd "go build -o flowbot cmd/main.go" --build.bin "./flowbot"
+      - air --build.cmd "go build -o app cmd/main.go" --build.bin "./app"
 
   gosec:
     cmds:
