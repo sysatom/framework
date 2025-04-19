@@ -17,8 +17,8 @@ import (
 type ValidateController struct {
 }
 
-func NewValidateController() ValidateController {
-	return ValidateController{}
+func NewValidateController() *ValidateController {
+	return &ValidateController{}
 }
 
 // User contains user information

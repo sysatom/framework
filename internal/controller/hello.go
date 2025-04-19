@@ -2,10 +2,9 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/oops"
-	"github.com/sysatom/framework/ent"
+	"github.com/sysatom/framework/internal/service"
 	"github.com/sysatom/framework/pkg/types"
 	"github.com/sysatom/framework/pkg/types/protocol"
 	"github.com/sysatom/framework/pkg/zlog"
@@ -15,14 +14,14 @@ import (
 )
 
 type HelloController struct {
-	store  *ent.Client
-	logger *zap.Logger
+	helloService *service.HelloService
+	logger       *zap.Logger
 }
 
-func NewHelloController(store *ent.Client, logger *zap.Logger) HelloController {
-	return HelloController{
-		store:  store,
-		logger: logger,
+func NewHelloController(logger *zap.Logger, helloService *service.HelloService) *HelloController {
+	return &HelloController{
+		helloService: helloService,
+		logger:       logger,
 	}
 }
 
@@ -82,43 +81,10 @@ func a() error {
 }
 
 func (controller HelloController) Ent(c echo.Context) error {
-	a1, err := controller.store.MerchantAccount.Create().
-		SetUsername(time.Now().String()).
-		SetPassword("123456").
-		SetEmail("j@j.com").
-		SetIsMainAccount(true).
-		SetPhone("1234567890").
-		Save(c.Request().Context())
+	err := controller.helloService.Hello(c.Request().Context())
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
-
-	m1, err := controller.store.Merchant.Create().
-		SetMerchantName(time.Now().String()).
-		SetCity("joey").
-		SetAddress("joey").
-		SetContactPerson("joey").
-		SetContactPhone("joey").
-		SetCountry("joey").
-		SetProvince("joey").
-		SetDistrict("joey").
-		AddAccounts(a1).
-		Save(c.Request().Context())
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	fmt.Println(m1)
-
-	list, err := controller.store.Merchant.Query().QueryAccounts().All(c.Request().Context())
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	fmt.Println(list)
 
 	return c.String(http.StatusOK, "ent")
 }

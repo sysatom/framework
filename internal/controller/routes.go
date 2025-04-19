@@ -5,12 +5,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func BindHelloRoutes(e *echo.Echo, c HelloController) {
+func BindHelloRoutes(e *echo.Echo, c *HelloController) {
 	e.GET("/hello", c.Hello)
 	e.GET("/ent", c.Ent)
 }
 
-func BindValidateRoutes(e *echo.Echo, c ValidateController) {
+func BindValidateRoutes(e *echo.Echo, c *ValidateController) {
 	e.GET("/validate", c.Validate)
 
 	g := e.Group("/auth")
