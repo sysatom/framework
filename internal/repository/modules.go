@@ -5,5 +5,5 @@ import (
 )
 
 var Modules = fx.Options(
-	fx.Provide(NewMySQLClient, NewRedisClient),
+	fx.Provide(NewMySQLClient, NewRedisClient, NewUserRepository),
 )

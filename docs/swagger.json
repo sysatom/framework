@@ -46,9 +46,125 @@
                     }
                 }
             }
+        },
+        "/user/info": {
+            "get": {
+                "description": "User info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "User info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/protocol.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.KV"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "User login with username and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UserLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/protocol.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.UserLoginResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "protocol.Response": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Response data"
+                },
+                "message": {
+                    "description": "Error message, it is recommended to fill in a human-readable error message when the action fails to execute,\nor an empty string when it succeeds.",
+                    "type": "string"
+                },
+                "retcode": {
+                    "description": "The return code, which must conform to the return code rules defined later on this page",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Execution status (success or failure), must be one of ok and failed,\nindicating successful and unsuccessful execution, respectively.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/protocol.ResponseStatus"
+                        }
+                    ]
+                }
+            }
+        },
+        "protocol.ResponseStatus": {
+            "type": "string",
+            "enum": [
+                "ok",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "Success",
+                "Failed"
+            ]
+        },
         "types.FileDef": {
             "type": "object",
             "properties": {
@@ -85,6 +201,40 @@
                 },
                 "user": {
                     "description": "User who created the file",
+                    "type": "string"
+                }
+            }
+        },
+        "types.KV": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "types.UserLoginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "Password",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "Account name",
+                    "type": "string"
+                }
+            }
+        },
+        "types.UserLoginResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "Account ID",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "JWT token",
                     "type": "string"
                 }
             }

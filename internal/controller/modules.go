@@ -7,6 +7,6 @@ import (
 
 var Modules = fx.Options(
 	service.Modules,
-	fx.Provide(NewHelloController, NewValidateController),
-	fx.Invoke(BindHelloRoutes, BindValidateRoutes),
+	fx.Provide(NewHelloController, NewValidateController, NewUserController),
+	fx.Invoke(BindHelloRoutes, BindValidateRoutes, BindAdminRoutes),
 )

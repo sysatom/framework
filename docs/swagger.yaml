@@ -1,5 +1,33 @@
 basePath: /
 definitions:
+  protocol.Response:
+    properties:
+      data:
+        description: Response data
+      message:
+        description: |-
+          Error message, it is recommended to fill in a human-readable error message when the action fails to execute,
+          or an empty string when it succeeds.
+        type: string
+      retcode:
+        description: The return code, which must conform to the return code rules
+          defined later on this page
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/protocol.ResponseStatus'
+        description: |-
+          Execution status (success or failure), must be one of ok and failed,
+          indicating successful and unsuccessful execution, respectively.
+    type: object
+  protocol.ResponseStatus:
+    enum:
+    - ok
+    - failed
+    type: string
+    x-enum-varnames:
+    - Success
+    - Failed
   types.FileDef:
     properties:
       createdAt:
@@ -29,6 +57,30 @@ definitions:
         type: string
       user:
         description: User who created the file
+        type: string
+    type: object
+  types.KV:
+    additionalProperties: true
+    type: object
+  types.UserLoginRequest:
+    properties:
+      password:
+        description: Password
+        type: string
+      username:
+        description: Account name
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  types.UserLoginResponse:
+    properties:
+      id:
+        description: Account ID
+        type: string
+      token:
+        description: JWT token
         type: string
     type: object
 host: localhost:6060
@@ -61,6 +113,53 @@ paths:
       summary: Show an account
       tags:
       - accounts
+  /user/info:
+    get:
+      consumes:
+      - application/json
+      description: User info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/protocol.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.KV'
+              type: object
+      summary: User info
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: User login with username and password
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/protocol.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.UserLoginResponse'
+              type: object
+      summary: User login
+      tags:
+      - user
 schemes:
 - http
 securityDefinitions:

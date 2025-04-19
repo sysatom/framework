@@ -32,6 +32,8 @@ type Type struct {
 	ApiPath string `json:"api_path" yaml:"api_path" mapstructure:"api_path"`
 	// App Url
 	URL string `json:"url" yaml:"url" mapstructure:"url"`
+	// JWT secret
+	JWTSecret string `json:"jwt_secret" yaml:"jwt_secret" mapstructure:"jwt_secret"`
 
 	// Configs for subsystems
 	Store StoreType    `json:"store_config" yaml:"store_config" mapstructure:"store_config"`
