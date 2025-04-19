@@ -12,13 +12,14 @@ var (
 	MerchantsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "merchant_name", Type: field.TypeString},
-		{Name: "contact_person", Type: field.TypeString},
-		{Name: "contact_phone", Type: field.TypeString},
-		{Name: "country", Type: field.TypeString},
-		{Name: "province", Type: field.TypeString},
-		{Name: "city", Type: field.TypeString},
-		{Name: "district", Type: field.TypeString},
-		{Name: "address", Type: field.TypeString},
+		{Name: "contact_person", Type: field.TypeString, Nullable: true},
+		{Name: "contact_phone", Type: field.TypeString, Nullable: true},
+		{Name: "country", Type: field.TypeString, Nullable: true},
+		{Name: "province", Type: field.TypeString, Nullable: true},
+		{Name: "city", Type: field.TypeString, Nullable: true},
+		{Name: "district", Type: field.TypeString, Nullable: true},
+		{Name: "address", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
 	}
 	// MerchantsTable holds the schema information for the "merchants" table.
 	MerchantsTable = &schema.Table{

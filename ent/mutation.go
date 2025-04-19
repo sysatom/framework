@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -48,6 +49,7 @@ type MerchantMutation struct {
 	city            *string
 	district        *string
 	address         *string
+	created_at      *time.Time
 	clearedFields   map[string]struct{}
 	accounts        map[int]struct{}
 	removedaccounts map[int]struct{}
@@ -222,9 +224,22 @@ func (m *MerchantMutation) OldContactPerson(ctx context.Context) (v string, err 
 	return oldValue.ContactPerson, nil
 }
 
+// ClearContactPerson clears the value of the "contact_person" field.
+func (m *MerchantMutation) ClearContactPerson() {
+	m.contact_person = nil
+	m.clearedFields[merchant.FieldContactPerson] = struct{}{}
+}
+
+// ContactPersonCleared returns if the "contact_person" field was cleared in this mutation.
+func (m *MerchantMutation) ContactPersonCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldContactPerson]
+	return ok
+}
+
 // ResetContactPerson resets all changes to the "contact_person" field.
 func (m *MerchantMutation) ResetContactPerson() {
 	m.contact_person = nil
+	delete(m.clearedFields, merchant.FieldContactPerson)
 }
 
 // SetContactPhone sets the "contact_phone" field.
@@ -258,9 +273,22 @@ func (m *MerchantMutation) OldContactPhone(ctx context.Context) (v string, err e
 	return oldValue.ContactPhone, nil
 }
 
+// ClearContactPhone clears the value of the "contact_phone" field.
+func (m *MerchantMutation) ClearContactPhone() {
+	m.contact_phone = nil
+	m.clearedFields[merchant.FieldContactPhone] = struct{}{}
+}
+
+// ContactPhoneCleared returns if the "contact_phone" field was cleared in this mutation.
+func (m *MerchantMutation) ContactPhoneCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldContactPhone]
+	return ok
+}
+
 // ResetContactPhone resets all changes to the "contact_phone" field.
 func (m *MerchantMutation) ResetContactPhone() {
 	m.contact_phone = nil
+	delete(m.clearedFields, merchant.FieldContactPhone)
 }
 
 // SetCountry sets the "country" field.
@@ -294,9 +322,22 @@ func (m *MerchantMutation) OldCountry(ctx context.Context) (v string, err error)
 	return oldValue.Country, nil
 }
 
+// ClearCountry clears the value of the "country" field.
+func (m *MerchantMutation) ClearCountry() {
+	m.country = nil
+	m.clearedFields[merchant.FieldCountry] = struct{}{}
+}
+
+// CountryCleared returns if the "country" field was cleared in this mutation.
+func (m *MerchantMutation) CountryCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldCountry]
+	return ok
+}
+
 // ResetCountry resets all changes to the "country" field.
 func (m *MerchantMutation) ResetCountry() {
 	m.country = nil
+	delete(m.clearedFields, merchant.FieldCountry)
 }
 
 // SetProvince sets the "province" field.
@@ -330,9 +371,22 @@ func (m *MerchantMutation) OldProvince(ctx context.Context) (v string, err error
 	return oldValue.Province, nil
 }
 
+// ClearProvince clears the value of the "province" field.
+func (m *MerchantMutation) ClearProvince() {
+	m.province = nil
+	m.clearedFields[merchant.FieldProvince] = struct{}{}
+}
+
+// ProvinceCleared returns if the "province" field was cleared in this mutation.
+func (m *MerchantMutation) ProvinceCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldProvince]
+	return ok
+}
+
 // ResetProvince resets all changes to the "province" field.
 func (m *MerchantMutation) ResetProvince() {
 	m.province = nil
+	delete(m.clearedFields, merchant.FieldProvince)
 }
 
 // SetCity sets the "city" field.
@@ -366,9 +420,22 @@ func (m *MerchantMutation) OldCity(ctx context.Context) (v string, err error) {
 	return oldValue.City, nil
 }
 
+// ClearCity clears the value of the "city" field.
+func (m *MerchantMutation) ClearCity() {
+	m.city = nil
+	m.clearedFields[merchant.FieldCity] = struct{}{}
+}
+
+// CityCleared returns if the "city" field was cleared in this mutation.
+func (m *MerchantMutation) CityCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldCity]
+	return ok
+}
+
 // ResetCity resets all changes to the "city" field.
 func (m *MerchantMutation) ResetCity() {
 	m.city = nil
+	delete(m.clearedFields, merchant.FieldCity)
 }
 
 // SetDistrict sets the "district" field.
@@ -402,9 +469,22 @@ func (m *MerchantMutation) OldDistrict(ctx context.Context) (v string, err error
 	return oldValue.District, nil
 }
 
+// ClearDistrict clears the value of the "district" field.
+func (m *MerchantMutation) ClearDistrict() {
+	m.district = nil
+	m.clearedFields[merchant.FieldDistrict] = struct{}{}
+}
+
+// DistrictCleared returns if the "district" field was cleared in this mutation.
+func (m *MerchantMutation) DistrictCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldDistrict]
+	return ok
+}
+
 // ResetDistrict resets all changes to the "district" field.
 func (m *MerchantMutation) ResetDistrict() {
 	m.district = nil
+	delete(m.clearedFields, merchant.FieldDistrict)
 }
 
 // SetAddress sets the "address" field.
@@ -438,9 +518,58 @@ func (m *MerchantMutation) OldAddress(ctx context.Context) (v string, err error)
 	return oldValue.Address, nil
 }
 
+// ClearAddress clears the value of the "address" field.
+func (m *MerchantMutation) ClearAddress() {
+	m.address = nil
+	m.clearedFields[merchant.FieldAddress] = struct{}{}
+}
+
+// AddressCleared returns if the "address" field was cleared in this mutation.
+func (m *MerchantMutation) AddressCleared() bool {
+	_, ok := m.clearedFields[merchant.FieldAddress]
+	return ok
+}
+
 // ResetAddress resets all changes to the "address" field.
 func (m *MerchantMutation) ResetAddress() {
 	m.address = nil
+	delete(m.clearedFields, merchant.FieldAddress)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *MerchantMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *MerchantMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Merchant entity.
+// If the Merchant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MerchantMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *MerchantMutation) ResetCreatedAt() {
+	m.created_at = nil
 }
 
 // AddAccountIDs adds the "accounts" edge to the MerchantAccount entity by ids.
@@ -531,7 +660,7 @@ func (m *MerchantMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MerchantMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.merchant_name != nil {
 		fields = append(fields, merchant.FieldMerchantName)
 	}
@@ -555,6 +684,9 @@ func (m *MerchantMutation) Fields() []string {
 	}
 	if m.address != nil {
 		fields = append(fields, merchant.FieldAddress)
+	}
+	if m.created_at != nil {
+		fields = append(fields, merchant.FieldCreatedAt)
 	}
 	return fields
 }
@@ -580,6 +712,8 @@ func (m *MerchantMutation) Field(name string) (ent.Value, bool) {
 		return m.District()
 	case merchant.FieldAddress:
 		return m.Address()
+	case merchant.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -605,6 +739,8 @@ func (m *MerchantMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDistrict(ctx)
 	case merchant.FieldAddress:
 		return m.OldAddress(ctx)
+	case merchant.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Merchant field %s", name)
 }
@@ -670,6 +806,13 @@ func (m *MerchantMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAddress(v)
 		return nil
+	case merchant.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Merchant field %s", name)
 }
@@ -699,7 +842,29 @@ func (m *MerchantMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *MerchantMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(merchant.FieldContactPerson) {
+		fields = append(fields, merchant.FieldContactPerson)
+	}
+	if m.FieldCleared(merchant.FieldContactPhone) {
+		fields = append(fields, merchant.FieldContactPhone)
+	}
+	if m.FieldCleared(merchant.FieldCountry) {
+		fields = append(fields, merchant.FieldCountry)
+	}
+	if m.FieldCleared(merchant.FieldProvince) {
+		fields = append(fields, merchant.FieldProvince)
+	}
+	if m.FieldCleared(merchant.FieldCity) {
+		fields = append(fields, merchant.FieldCity)
+	}
+	if m.FieldCleared(merchant.FieldDistrict) {
+		fields = append(fields, merchant.FieldDistrict)
+	}
+	if m.FieldCleared(merchant.FieldAddress) {
+		fields = append(fields, merchant.FieldAddress)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -712,6 +877,29 @@ func (m *MerchantMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *MerchantMutation) ClearField(name string) error {
+	switch name {
+	case merchant.FieldContactPerson:
+		m.ClearContactPerson()
+		return nil
+	case merchant.FieldContactPhone:
+		m.ClearContactPhone()
+		return nil
+	case merchant.FieldCountry:
+		m.ClearCountry()
+		return nil
+	case merchant.FieldProvince:
+		m.ClearProvince()
+		return nil
+	case merchant.FieldCity:
+		m.ClearCity()
+		return nil
+	case merchant.FieldDistrict:
+		m.ClearDistrict()
+		return nil
+	case merchant.FieldAddress:
+		m.ClearAddress()
+		return nil
+	}
 	return fmt.Errorf("unknown Merchant nullable field %s", name)
 }
 
@@ -742,6 +930,9 @@ func (m *MerchantMutation) ResetField(name string) error {
 		return nil
 	case merchant.FieldAddress:
 		m.ResetAddress()
+		return nil
+	case merchant.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Merchant field %s", name)

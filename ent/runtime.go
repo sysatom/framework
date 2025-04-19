@@ -3,6 +3,9 @@
 package ent
 
 import (
+	"time"
+
+	"github.com/sysatom/framework/ent/merchant"
 	"github.com/sysatom/framework/ent/merchantaccount"
 	"github.com/sysatom/framework/ent/platformaccount"
 	"github.com/sysatom/framework/ent/schema"
@@ -13,6 +16,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	merchantFields := schema.Merchant{}.Fields()
+	_ = merchantFields
+	// merchantDescCreatedAt is the schema descriptor for created_at field.
+	merchantDescCreatedAt := merchantFields[8].Descriptor()
+	// merchant.DefaultCreatedAt holds the default value on creation for the created_at field.
+	merchant.DefaultCreatedAt = merchantDescCreatedAt.Default.(func() time.Time)
 	merchantaccountFields := schema.MerchantAccount{}.Fields()
 	_ = merchantaccountFields
 	// merchantaccountDescEmail is the schema descriptor for email field.

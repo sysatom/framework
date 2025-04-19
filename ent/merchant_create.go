@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -32,9 +33,25 @@ func (mc *MerchantCreate) SetContactPerson(s string) *MerchantCreate {
 	return mc
 }
 
+// SetNillableContactPerson sets the "contact_person" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableContactPerson(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetContactPerson(*s)
+	}
+	return mc
+}
+
 // SetContactPhone sets the "contact_phone" field.
 func (mc *MerchantCreate) SetContactPhone(s string) *MerchantCreate {
 	mc.mutation.SetContactPhone(s)
+	return mc
+}
+
+// SetNillableContactPhone sets the "contact_phone" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableContactPhone(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetContactPhone(*s)
+	}
 	return mc
 }
 
@@ -44,9 +61,25 @@ func (mc *MerchantCreate) SetCountry(s string) *MerchantCreate {
 	return mc
 }
 
+// SetNillableCountry sets the "country" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableCountry(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetCountry(*s)
+	}
+	return mc
+}
+
 // SetProvince sets the "province" field.
 func (mc *MerchantCreate) SetProvince(s string) *MerchantCreate {
 	mc.mutation.SetProvince(s)
+	return mc
+}
+
+// SetNillableProvince sets the "province" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableProvince(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetProvince(*s)
+	}
 	return mc
 }
 
@@ -56,15 +89,53 @@ func (mc *MerchantCreate) SetCity(s string) *MerchantCreate {
 	return mc
 }
 
+// SetNillableCity sets the "city" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableCity(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetCity(*s)
+	}
+	return mc
+}
+
 // SetDistrict sets the "district" field.
 func (mc *MerchantCreate) SetDistrict(s string) *MerchantCreate {
 	mc.mutation.SetDistrict(s)
 	return mc
 }
 
+// SetNillableDistrict sets the "district" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableDistrict(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetDistrict(*s)
+	}
+	return mc
+}
+
 // SetAddress sets the "address" field.
 func (mc *MerchantCreate) SetAddress(s string) *MerchantCreate {
 	mc.mutation.SetAddress(s)
+	return mc
+}
+
+// SetNillableAddress sets the "address" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableAddress(s *string) *MerchantCreate {
+	if s != nil {
+		mc.SetAddress(*s)
+	}
+	return mc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (mc *MerchantCreate) SetCreatedAt(t time.Time) *MerchantCreate {
+	mc.mutation.SetCreatedAt(t)
+	return mc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (mc *MerchantCreate) SetNillableCreatedAt(t *time.Time) *MerchantCreate {
+	if t != nil {
+		mc.SetCreatedAt(*t)
+	}
 	return mc
 }
 
@@ -90,6 +161,7 @@ func (mc *MerchantCreate) Mutation() *MerchantMutation {
 
 // Save creates the Merchant in the database.
 func (mc *MerchantCreate) Save(ctx context.Context) (*Merchant, error) {
+	mc.defaults()
 	return withHooks(ctx, mc.sqlSave, mc.mutation, mc.hooks)
 }
 
@@ -115,31 +187,21 @@ func (mc *MerchantCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (mc *MerchantCreate) defaults() {
+	if _, ok := mc.mutation.CreatedAt(); !ok {
+		v := merchant.DefaultCreatedAt()
+		mc.mutation.SetCreatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (mc *MerchantCreate) check() error {
 	if _, ok := mc.mutation.MerchantName(); !ok {
 		return &ValidationError{Name: "merchant_name", err: errors.New(`ent: missing required field "Merchant.merchant_name"`)}
 	}
-	if _, ok := mc.mutation.ContactPerson(); !ok {
-		return &ValidationError{Name: "contact_person", err: errors.New(`ent: missing required field "Merchant.contact_person"`)}
-	}
-	if _, ok := mc.mutation.ContactPhone(); !ok {
-		return &ValidationError{Name: "contact_phone", err: errors.New(`ent: missing required field "Merchant.contact_phone"`)}
-	}
-	if _, ok := mc.mutation.Country(); !ok {
-		return &ValidationError{Name: "country", err: errors.New(`ent: missing required field "Merchant.country"`)}
-	}
-	if _, ok := mc.mutation.Province(); !ok {
-		return &ValidationError{Name: "province", err: errors.New(`ent: missing required field "Merchant.province"`)}
-	}
-	if _, ok := mc.mutation.City(); !ok {
-		return &ValidationError{Name: "city", err: errors.New(`ent: missing required field "Merchant.city"`)}
-	}
-	if _, ok := mc.mutation.District(); !ok {
-		return &ValidationError{Name: "district", err: errors.New(`ent: missing required field "Merchant.district"`)}
-	}
-	if _, ok := mc.mutation.Address(); !ok {
-		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "Merchant.address"`)}
+	if _, ok := mc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Merchant.created_at"`)}
 	}
 	return nil
 }
@@ -199,6 +261,10 @@ func (mc *MerchantCreate) createSpec() (*Merchant, *sqlgraph.CreateSpec) {
 		_spec.SetField(merchant.FieldAddress, field.TypeString, value)
 		_node.Address = value
 	}
+	if value, ok := mc.mutation.CreatedAt(); ok {
+		_spec.SetField(merchant.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
 	if nodes := mc.mutation.AccountsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -236,6 +302,7 @@ func (mcb *MerchantCreateBulk) Save(ctx context.Context) ([]*Merchant, error) {
 	for i := range mcb.builders {
 		func(i int, root context.Context) {
 			builder := mcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MerchantMutation)
 				if !ok {

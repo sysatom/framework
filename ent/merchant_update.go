@@ -56,6 +56,12 @@ func (mu *MerchantUpdate) SetNillableContactPerson(s *string) *MerchantUpdate {
 	return mu
 }
 
+// ClearContactPerson clears the value of the "contact_person" field.
+func (mu *MerchantUpdate) ClearContactPerson() *MerchantUpdate {
+	mu.mutation.ClearContactPerson()
+	return mu
+}
+
 // SetContactPhone sets the "contact_phone" field.
 func (mu *MerchantUpdate) SetContactPhone(s string) *MerchantUpdate {
 	mu.mutation.SetContactPhone(s)
@@ -67,6 +73,12 @@ func (mu *MerchantUpdate) SetNillableContactPhone(s *string) *MerchantUpdate {
 	if s != nil {
 		mu.SetContactPhone(*s)
 	}
+	return mu
+}
+
+// ClearContactPhone clears the value of the "contact_phone" field.
+func (mu *MerchantUpdate) ClearContactPhone() *MerchantUpdate {
+	mu.mutation.ClearContactPhone()
 	return mu
 }
 
@@ -84,6 +96,12 @@ func (mu *MerchantUpdate) SetNillableCountry(s *string) *MerchantUpdate {
 	return mu
 }
 
+// ClearCountry clears the value of the "country" field.
+func (mu *MerchantUpdate) ClearCountry() *MerchantUpdate {
+	mu.mutation.ClearCountry()
+	return mu
+}
+
 // SetProvince sets the "province" field.
 func (mu *MerchantUpdate) SetProvince(s string) *MerchantUpdate {
 	mu.mutation.SetProvince(s)
@@ -95,6 +113,12 @@ func (mu *MerchantUpdate) SetNillableProvince(s *string) *MerchantUpdate {
 	if s != nil {
 		mu.SetProvince(*s)
 	}
+	return mu
+}
+
+// ClearProvince clears the value of the "province" field.
+func (mu *MerchantUpdate) ClearProvince() *MerchantUpdate {
+	mu.mutation.ClearProvince()
 	return mu
 }
 
@@ -112,6 +136,12 @@ func (mu *MerchantUpdate) SetNillableCity(s *string) *MerchantUpdate {
 	return mu
 }
 
+// ClearCity clears the value of the "city" field.
+func (mu *MerchantUpdate) ClearCity() *MerchantUpdate {
+	mu.mutation.ClearCity()
+	return mu
+}
+
 // SetDistrict sets the "district" field.
 func (mu *MerchantUpdate) SetDistrict(s string) *MerchantUpdate {
 	mu.mutation.SetDistrict(s)
@@ -126,6 +156,12 @@ func (mu *MerchantUpdate) SetNillableDistrict(s *string) *MerchantUpdate {
 	return mu
 }
 
+// ClearDistrict clears the value of the "district" field.
+func (mu *MerchantUpdate) ClearDistrict() *MerchantUpdate {
+	mu.mutation.ClearDistrict()
+	return mu
+}
+
 // SetAddress sets the "address" field.
 func (mu *MerchantUpdate) SetAddress(s string) *MerchantUpdate {
 	mu.mutation.SetAddress(s)
@@ -137,6 +173,12 @@ func (mu *MerchantUpdate) SetNillableAddress(s *string) *MerchantUpdate {
 	if s != nil {
 		mu.SetAddress(*s)
 	}
+	return mu
+}
+
+// ClearAddress clears the value of the "address" field.
+func (mu *MerchantUpdate) ClearAddress() *MerchantUpdate {
+	mu.mutation.ClearAddress()
 	return mu
 }
 
@@ -223,23 +265,44 @@ func (mu *MerchantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := mu.mutation.ContactPerson(); ok {
 		_spec.SetField(merchant.FieldContactPerson, field.TypeString, value)
 	}
+	if mu.mutation.ContactPersonCleared() {
+		_spec.ClearField(merchant.FieldContactPerson, field.TypeString)
+	}
 	if value, ok := mu.mutation.ContactPhone(); ok {
 		_spec.SetField(merchant.FieldContactPhone, field.TypeString, value)
+	}
+	if mu.mutation.ContactPhoneCleared() {
+		_spec.ClearField(merchant.FieldContactPhone, field.TypeString)
 	}
 	if value, ok := mu.mutation.Country(); ok {
 		_spec.SetField(merchant.FieldCountry, field.TypeString, value)
 	}
+	if mu.mutation.CountryCleared() {
+		_spec.ClearField(merchant.FieldCountry, field.TypeString)
+	}
 	if value, ok := mu.mutation.Province(); ok {
 		_spec.SetField(merchant.FieldProvince, field.TypeString, value)
+	}
+	if mu.mutation.ProvinceCleared() {
+		_spec.ClearField(merchant.FieldProvince, field.TypeString)
 	}
 	if value, ok := mu.mutation.City(); ok {
 		_spec.SetField(merchant.FieldCity, field.TypeString, value)
 	}
+	if mu.mutation.CityCleared() {
+		_spec.ClearField(merchant.FieldCity, field.TypeString)
+	}
 	if value, ok := mu.mutation.District(); ok {
 		_spec.SetField(merchant.FieldDistrict, field.TypeString, value)
 	}
+	if mu.mutation.DistrictCleared() {
+		_spec.ClearField(merchant.FieldDistrict, field.TypeString)
+	}
 	if value, ok := mu.mutation.Address(); ok {
 		_spec.SetField(merchant.FieldAddress, field.TypeString, value)
+	}
+	if mu.mutation.AddressCleared() {
+		_spec.ClearField(merchant.FieldAddress, field.TypeString)
 	}
 	if mu.mutation.AccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -334,6 +397,12 @@ func (muo *MerchantUpdateOne) SetNillableContactPerson(s *string) *MerchantUpdat
 	return muo
 }
 
+// ClearContactPerson clears the value of the "contact_person" field.
+func (muo *MerchantUpdateOne) ClearContactPerson() *MerchantUpdateOne {
+	muo.mutation.ClearContactPerson()
+	return muo
+}
+
 // SetContactPhone sets the "contact_phone" field.
 func (muo *MerchantUpdateOne) SetContactPhone(s string) *MerchantUpdateOne {
 	muo.mutation.SetContactPhone(s)
@@ -345,6 +414,12 @@ func (muo *MerchantUpdateOne) SetNillableContactPhone(s *string) *MerchantUpdate
 	if s != nil {
 		muo.SetContactPhone(*s)
 	}
+	return muo
+}
+
+// ClearContactPhone clears the value of the "contact_phone" field.
+func (muo *MerchantUpdateOne) ClearContactPhone() *MerchantUpdateOne {
+	muo.mutation.ClearContactPhone()
 	return muo
 }
 
@@ -362,6 +437,12 @@ func (muo *MerchantUpdateOne) SetNillableCountry(s *string) *MerchantUpdateOne {
 	return muo
 }
 
+// ClearCountry clears the value of the "country" field.
+func (muo *MerchantUpdateOne) ClearCountry() *MerchantUpdateOne {
+	muo.mutation.ClearCountry()
+	return muo
+}
+
 // SetProvince sets the "province" field.
 func (muo *MerchantUpdateOne) SetProvince(s string) *MerchantUpdateOne {
 	muo.mutation.SetProvince(s)
@@ -373,6 +454,12 @@ func (muo *MerchantUpdateOne) SetNillableProvince(s *string) *MerchantUpdateOne 
 	if s != nil {
 		muo.SetProvince(*s)
 	}
+	return muo
+}
+
+// ClearProvince clears the value of the "province" field.
+func (muo *MerchantUpdateOne) ClearProvince() *MerchantUpdateOne {
+	muo.mutation.ClearProvince()
 	return muo
 }
 
@@ -390,6 +477,12 @@ func (muo *MerchantUpdateOne) SetNillableCity(s *string) *MerchantUpdateOne {
 	return muo
 }
 
+// ClearCity clears the value of the "city" field.
+func (muo *MerchantUpdateOne) ClearCity() *MerchantUpdateOne {
+	muo.mutation.ClearCity()
+	return muo
+}
+
 // SetDistrict sets the "district" field.
 func (muo *MerchantUpdateOne) SetDistrict(s string) *MerchantUpdateOne {
 	muo.mutation.SetDistrict(s)
@@ -404,6 +497,12 @@ func (muo *MerchantUpdateOne) SetNillableDistrict(s *string) *MerchantUpdateOne 
 	return muo
 }
 
+// ClearDistrict clears the value of the "district" field.
+func (muo *MerchantUpdateOne) ClearDistrict() *MerchantUpdateOne {
+	muo.mutation.ClearDistrict()
+	return muo
+}
+
 // SetAddress sets the "address" field.
 func (muo *MerchantUpdateOne) SetAddress(s string) *MerchantUpdateOne {
 	muo.mutation.SetAddress(s)
@@ -415,6 +514,12 @@ func (muo *MerchantUpdateOne) SetNillableAddress(s *string) *MerchantUpdateOne {
 	if s != nil {
 		muo.SetAddress(*s)
 	}
+	return muo
+}
+
+// ClearAddress clears the value of the "address" field.
+func (muo *MerchantUpdateOne) ClearAddress() *MerchantUpdateOne {
+	muo.mutation.ClearAddress()
 	return muo
 }
 
@@ -531,23 +636,44 @@ func (muo *MerchantUpdateOne) sqlSave(ctx context.Context) (_node *Merchant, err
 	if value, ok := muo.mutation.ContactPerson(); ok {
 		_spec.SetField(merchant.FieldContactPerson, field.TypeString, value)
 	}
+	if muo.mutation.ContactPersonCleared() {
+		_spec.ClearField(merchant.FieldContactPerson, field.TypeString)
+	}
 	if value, ok := muo.mutation.ContactPhone(); ok {
 		_spec.SetField(merchant.FieldContactPhone, field.TypeString, value)
+	}
+	if muo.mutation.ContactPhoneCleared() {
+		_spec.ClearField(merchant.FieldContactPhone, field.TypeString)
 	}
 	if value, ok := muo.mutation.Country(); ok {
 		_spec.SetField(merchant.FieldCountry, field.TypeString, value)
 	}
+	if muo.mutation.CountryCleared() {
+		_spec.ClearField(merchant.FieldCountry, field.TypeString)
+	}
 	if value, ok := muo.mutation.Province(); ok {
 		_spec.SetField(merchant.FieldProvince, field.TypeString, value)
+	}
+	if muo.mutation.ProvinceCleared() {
+		_spec.ClearField(merchant.FieldProvince, field.TypeString)
 	}
 	if value, ok := muo.mutation.City(); ok {
 		_spec.SetField(merchant.FieldCity, field.TypeString, value)
 	}
+	if muo.mutation.CityCleared() {
+		_spec.ClearField(merchant.FieldCity, field.TypeString)
+	}
 	if value, ok := muo.mutation.District(); ok {
 		_spec.SetField(merchant.FieldDistrict, field.TypeString, value)
 	}
+	if muo.mutation.DistrictCleared() {
+		_spec.ClearField(merchant.FieldDistrict, field.TypeString)
+	}
 	if value, ok := muo.mutation.Address(); ok {
 		_spec.SetField(merchant.FieldAddress, field.TypeString, value)
+	}
+	if muo.mutation.AddressCleared() {
+		_spec.ClearField(merchant.FieldAddress, field.TypeString)
 	}
 	if muo.mutation.AccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{

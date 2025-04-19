@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"time"
 )
 
 // Merchant holds the schema definition for the Merchant entity.
@@ -15,13 +16,16 @@ type Merchant struct {
 func (Merchant) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("merchant_name"),
-		field.String("contact_person"),
-		field.String("contact_phone"),
-		field.String("country"),
-		field.String("province"),
-		field.String("city"),
-		field.String("district"),
-		field.String("address"),
+		field.String("contact_person").Optional(),
+		field.String("contact_phone").Optional(),
+		field.String("country").Optional(),
+		field.String("province").Optional(),
+		field.String("city").Optional(),
+		field.String("district").Optional(),
+		field.String("address").Optional(),
+		field.Time("created_at").
+			Default(time.Now).
+			Immutable(),
 	}
 }
 

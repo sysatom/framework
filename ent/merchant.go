@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -32,6 +33,8 @@ type Merchant struct {
 	District string `json:"district,omitempty"`
 	// Address holds the value of the "address" field.
 	Address string `json:"address,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MerchantQuery when eager-loading is set.
 	Edges        MerchantEdges `json:"edges"`
@@ -65,6 +68,8 @@ func (*Merchant) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case merchant.FieldMerchantName, merchant.FieldContactPerson, merchant.FieldContactPhone, merchant.FieldCountry, merchant.FieldProvince, merchant.FieldCity, merchant.FieldDistrict, merchant.FieldAddress:
 			values[i] = new(sql.NullString)
+		case merchant.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -134,6 +139,12 @@ func (m *Merchant) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				m.Address = value.String
 			}
+		case merchant.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				m.CreatedAt = value.Time
+			}
 		default:
 			m.selectValues.Set(columns[i], values[i])
 		}
@@ -198,6 +209,9 @@ func (m *Merchant) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("address=")
 	builder.WriteString(m.Address)
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

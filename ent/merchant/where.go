@@ -3,6 +3,8 @@
 package merchant
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/sysatom/framework/ent/predicate"
@@ -91,6 +93,11 @@ func District(v string) predicate.Merchant {
 // Address applies equality check predicate on the "address" field. It's identical to AddressEQ.
 func Address(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEQ(FieldAddress, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // MerchantNameEQ applies the EQ predicate on the "merchant_name" field.
@@ -213,6 +220,16 @@ func ContactPersonHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldContactPerson, v))
 }
 
+// ContactPersonIsNil applies the IsNil predicate on the "contact_person" field.
+func ContactPersonIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldContactPerson))
+}
+
+// ContactPersonNotNil applies the NotNil predicate on the "contact_person" field.
+func ContactPersonNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldContactPerson))
+}
+
 // ContactPersonEqualFold applies the EqualFold predicate on the "contact_person" field.
 func ContactPersonEqualFold(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEqualFold(FieldContactPerson, v))
@@ -276,6 +293,16 @@ func ContactPhoneHasPrefix(v string) predicate.Merchant {
 // ContactPhoneHasSuffix applies the HasSuffix predicate on the "contact_phone" field.
 func ContactPhoneHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldContactPhone, v))
+}
+
+// ContactPhoneIsNil applies the IsNil predicate on the "contact_phone" field.
+func ContactPhoneIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldContactPhone))
+}
+
+// ContactPhoneNotNil applies the NotNil predicate on the "contact_phone" field.
+func ContactPhoneNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldContactPhone))
 }
 
 // ContactPhoneEqualFold applies the EqualFold predicate on the "contact_phone" field.
@@ -343,6 +370,16 @@ func CountryHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldCountry, v))
 }
 
+// CountryIsNil applies the IsNil predicate on the "country" field.
+func CountryIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldCountry))
+}
+
+// CountryNotNil applies the NotNil predicate on the "country" field.
+func CountryNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldCountry))
+}
+
 // CountryEqualFold applies the EqualFold predicate on the "country" field.
 func CountryEqualFold(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEqualFold(FieldCountry, v))
@@ -406,6 +443,16 @@ func ProvinceHasPrefix(v string) predicate.Merchant {
 // ProvinceHasSuffix applies the HasSuffix predicate on the "province" field.
 func ProvinceHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldProvince, v))
+}
+
+// ProvinceIsNil applies the IsNil predicate on the "province" field.
+func ProvinceIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldProvince))
+}
+
+// ProvinceNotNil applies the NotNil predicate on the "province" field.
+func ProvinceNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldProvince))
 }
 
 // ProvinceEqualFold applies the EqualFold predicate on the "province" field.
@@ -473,6 +520,16 @@ func CityHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldCity, v))
 }
 
+// CityIsNil applies the IsNil predicate on the "city" field.
+func CityIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldCity))
+}
+
+// CityNotNil applies the NotNil predicate on the "city" field.
+func CityNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldCity))
+}
+
 // CityEqualFold applies the EqualFold predicate on the "city" field.
 func CityEqualFold(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEqualFold(FieldCity, v))
@@ -536,6 +593,16 @@ func DistrictHasPrefix(v string) predicate.Merchant {
 // DistrictHasSuffix applies the HasSuffix predicate on the "district" field.
 func DistrictHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldDistrict, v))
+}
+
+// DistrictIsNil applies the IsNil predicate on the "district" field.
+func DistrictIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldDistrict))
+}
+
+// DistrictNotNil applies the NotNil predicate on the "district" field.
+func DistrictNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldDistrict))
 }
 
 // DistrictEqualFold applies the EqualFold predicate on the "district" field.
@@ -603,6 +670,16 @@ func AddressHasSuffix(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldHasSuffix(FieldAddress, v))
 }
 
+// AddressIsNil applies the IsNil predicate on the "address" field.
+func AddressIsNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldIsNull(FieldAddress))
+}
+
+// AddressNotNil applies the NotNil predicate on the "address" field.
+func AddressNotNil() predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotNull(FieldAddress))
+}
+
 // AddressEqualFold applies the EqualFold predicate on the "address" field.
 func AddressEqualFold(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldEqualFold(FieldAddress, v))
@@ -611,6 +688,46 @@ func AddressEqualFold(v string) predicate.Merchant {
 // AddressContainsFold applies the ContainsFold predicate on the "address" field.
 func AddressContainsFold(v string) predicate.Merchant {
 	return predicate.Merchant(sql.FieldContainsFold(FieldAddress, v))
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.Merchant {
+	return predicate.Merchant(sql.FieldLTE(FieldCreatedAt, v))
 }
 
 // HasAccounts applies the HasEdge predicate on the "accounts" edge.
