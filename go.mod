@@ -28,7 +28,7 @@ require (
 	github.com/swaggo/swag v1.16.4
 	github.com/tidwall/gjson v1.18.0
 	go.uber.org/automaxprocs v1.6.0
-	go.uber.org/fx v1.23.0
+	go.uber.org/fx v1.24.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.37.0
 	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
@@ -98,7 +98,7 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
-	go.uber.org/dig v1.18.0 // indirect
+	go.uber.org/dig v1.19.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/mod v0.24.0 // indirect
