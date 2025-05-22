@@ -19,7 +19,7 @@ require (
 	github.com/labstack/echo-jwt/v4 v4.3.1
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/redis/go-redis/v9 v9.8.0
-	github.com/samber/oops v1.17.0
+	github.com/samber/oops v1.18.0
 	github.com/sony/sonyflake v1.2.1
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
@@ -82,7 +82,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
-	github.com/samber/lo v1.49.1 // indirect
+	github.com/samber/lo v1.50.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.12.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
