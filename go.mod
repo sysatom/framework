@@ -5,7 +5,7 @@ go 1.24
 require (
 	entgo.io/ent v0.14.4
 	github.com/bsm/redislock v0.9.4
-	github.com/bytedance/sonic v1.13.2
+	github.com/bytedance/sonic v1.13.3
 	github.com/creachadair/jrpc2 v1.3.1
 	github.com/dgraph-io/ristretto/v2 v2.2.0
 	github.com/go-playground/locales v0.14.1
